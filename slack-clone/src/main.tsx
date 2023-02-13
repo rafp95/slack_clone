@@ -7,6 +7,8 @@ import { Login } from "./components/Auth/Login";
 import { Register } from "./components/Auth/Register";
 import { NotFound } from "./components/NotFound/NotFound";
 
+import "semantic-ui-css/semantic.min.css";
+
 const Root = () => {
   return (
     <Routes>
