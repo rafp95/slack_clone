@@ -10,7 +10,9 @@ import {
 import { Link } from "react-router-dom";
 
 export const Register = () => {
-  const handleChange = () => {};
+  const handleChange = () => {
+    console.log("fds");
+  };
 
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
@@ -55,7 +57,9 @@ export const Register = () => {
               type="password"
               onChange={handleChange}
             />
-            <Button color="orange" fluid size="large"></Button>
+            <Button color="orange" fluid size="large">
+              Rejestruj się
+            </Button>
           </Segment>
         </Form>
         <Message>
