@@ -21,9 +21,7 @@ const Root = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Root />
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <Root />
+  </BrowserRouter>
 );
