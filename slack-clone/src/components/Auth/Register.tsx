@@ -20,6 +20,7 @@ export const Register = () => {
   const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [accountCreated, setAccountCreated] = useState<boolean>(false);
 
   const isFormValid = () => {
     if (isFormEmpty()) {
@@ -34,11 +35,11 @@ export const Register = () => {
       return false;
     }
 
-    if (!isPasswordValid()) {
+    if (isPasswordValid() != null) {
       setErrors((prevState: FormError[]) => {
         prevState = [];
         prevState.push({
-          message: "Wpisz poprawne hasło",
+          message: isPasswordValid() ?? "",
           fieldName: "password",
         });
         return prevState;
@@ -81,20 +82,30 @@ export const Register = () => {
     }
   };
 
-  const isPasswordValid = () => {
+  const isPasswordValid = (): string | null => {
     if (passwordConfirmation.length < 6 || password.length < 6) {
-      return false;
+      return "Minimalna długość znaków to 6";
     }
 
     if (password !== passwordConfirmation) {
-      return false;
+      return "Podane hasła różnią się";
     }
 
-    return true;
+    return null;
   };
   const handleSubmit = () => {
+    setAccountCreated((prevState) => {
+      prevState = false;
+      return prevState;
+    });
+
     if (!isFormValid()) {
       return;
+    } else {
+      setErrors((prevState: FormError[]) => {
+        prevState = [];
+        return prevState;
+      });
     }
 
     setLoading(true);
@@ -102,6 +113,7 @@ export const Register = () => {
       .then((registerUser) => {
         console.log(registerUser);
         setLoading(false);
+        setAccountCreated(true);
       })
       .catch((err) => {
         console.log(err);
@@ -120,7 +132,6 @@ export const Register = () => {
           });
           return prevState;
         });
-
         setLoading(false);
       });
 
@@ -138,13 +149,18 @@ export const Register = () => {
       <Grid.Column style={{ maxWidth: 450 }}>
         <Header as="h2" icon color="orange" textAlign="center">
           <Icon name="puzzle piece" color="orange" />
-          Zarejestruj się do czatu
+          Zarejestruj się
         </Header>
-        {errors.length > 0 && (
-          <Message error>
-            <h3>Błędy</h3>
-            {displayErrors()}
-          </Message>
+        {accountCreated ? (
+          <Message success>Konto utworzone pomyślnie</Message>
+        ) : (
+          errors.length > 0 && (
+            <Message error>
+              <h3> {errors[0]?.allInputCheck ? "Błędy" : "Błąd"} </h3>
+
+              {displayErrors()}
+            </Message>
+          )
         )}
         <Form onSubmit={handleSubmit} size="large">
           <Segment stacked>
