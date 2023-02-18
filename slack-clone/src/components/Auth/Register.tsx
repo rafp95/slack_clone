@@ -13,6 +13,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { FormError } from "../../error-model/form.error";
 
+const emailRegx =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
 export const Register = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -22,7 +25,7 @@ export const Register = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [accountCreated, setAccountCreated] = useState<boolean>(false);
 
-  const isFormValid = () => {
+  const isFormValid = (): boolean => {
     if (isFormEmpty()) {
       setErrors((prevState: FormError[]) => {
         prevState = [];
@@ -45,6 +48,18 @@ export const Register = () => {
         return prevState;
       });
 
+      return false;
+    }
+
+    if (!email.match(emailRegx)) {
+      setErrors((prevState: FormError[]) => {
+        prevState = [];
+        prevState.push({
+          message: "Podaj poprawny adres email",
+          fieldName: "email",
+        });
+        return prevState;
+      });
       return false;
     }
 
