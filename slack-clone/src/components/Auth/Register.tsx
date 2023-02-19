@@ -9,9 +9,15 @@ import {
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  UserCredential,
+} from "firebase/auth";
 import { auth } from "../../firebase";
 import { FormError } from "../../error-model/form.error";
+import md5 from "md5";
+import { getDatabase, ref, set } from "firebase/database";
 
 const emailRegx =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -24,7 +30,6 @@ export const Register = () => {
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountCreated, setAccountCreated] = useState<boolean>(false);
-
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {
       setErrors((prevState: FormError[]) => {
@@ -125,10 +130,24 @@ export const Register = () => {
 
     setLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
-      .then((registerUser) => {
-        console.log(registerUser);
-        setLoading(false);
-        setAccountCreated(true);
+      .then((createdUser: UserCredential) => {
+        console.log(createdUser);
+        updateProfile(createdUser?.user, {
+          displayName: username,
+          photoURL: `https://www.gravatar.com/avatar/${md5(
+            createdUser.user.email ?? ""
+          )}?d=identicon`,
+        })
+          .then(() => {
+            setLoading(false);
+            setAccountCreated(true);
+
+            saveUser(createdUser);
+          })
+          .catch((err) => {
+            console.error(err);
+            setLoading(false);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -151,6 +170,21 @@ export const Register = () => {
       });
 
     return false;
+  };
+
+  const saveUser = (createdUser: UserCredential) => {
+    const db = getDatabase();
+    set(ref(db, `users/${createdUser.user.uid}`), {
+      username: createdUser.user?.displayName,
+      email: createdUser.user?.displayName,
+      profile_picture: createdUser.user?.photoURL,
+    })
+      .then(() => {
+        console.log("Konto zapisane");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleInputError = (inputName: string) => {
