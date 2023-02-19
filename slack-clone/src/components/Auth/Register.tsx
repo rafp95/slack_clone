@@ -18,9 +18,7 @@ import { auth } from "../../firebase";
 import { FormError } from "../../error-model/form.error";
 import md5 from "md5";
 import { getDatabase, ref, set } from "firebase/database";
-
-const emailRegx =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+import { emailRegx } from "../../utils/regex.validation";
 
 export const Register = () => {
   const [username, setUsername] = useState<string>("");
@@ -128,7 +126,10 @@ export const Register = () => {
       });
     }
 
-    setLoading(true);
+    setLoading((prevState) => {
+      prevState = true;
+      return prevState;
+    });
     createUserWithEmailAndPassword(auth, email, password)
       .then((createdUser: UserCredential) => {
         console.log(createdUser);
@@ -139,14 +140,21 @@ export const Register = () => {
           )}?d=identicon`,
         })
           .then(() => {
-            setLoading(false);
+            setLoading((prevState) => {
+              prevState = false;
+              return prevState;
+            });
+
             setAccountCreated(true);
 
             saveUser(createdUser);
           })
           .catch((err) => {
             console.error(err);
-            setLoading(false);
+            setLoading((prevState) => {
+              prevState = false;
+              return prevState;
+            });
           });
       })
       .catch((err) => {

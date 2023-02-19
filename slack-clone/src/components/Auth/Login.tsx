@@ -12,9 +12,7 @@ import { useState } from "react";
 import { FormError } from "../../error-model/form.error";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-
-const emailRegx =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+import { emailRegx } from "../../utils/regex.validation";
 
 export const Login = () => {
   const [email, setEmail] = useState<string>("");
