@@ -23,17 +23,9 @@ import { legacy_createStore as createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducres";
 import { setUser } from "./actions";
+import { Spinner } from "./components/Spinner/Spinner";
 
 const store = createStore(rootReducer, composeWithDevTools());
-
-const withRouter = (Component) => {
-  const Wrapper = (props) => {
-    const history = useNavigate();
-    const params = useParams();
-    return <Component history={history} {...Component} />;
-  };
-  return Wrapper;
-};
 
 const Root = () => {
   const navigateTo = useNavigate();
@@ -42,24 +34,23 @@ const Root = () => {
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        setIsLoading(false);
-
-        const tmpUser = setUser(user);
-
+        const loggedUser = setUser(user);
         store.dispatch({
-          type: tmpUser.type,
-          state: tmpUser.payload,
+          type: loggedUser.type,
+          state: loggedUser.payload,
         });
 
         navigateTo("/");
       }
+
+      setIsLoading(false);
     });
   }, []);
 
   return (
     <div>
       {isLoading ? (
-        "Ładowanie"
+        <Spinner />
       ) : (
         <Routes>
           <Route path="/" element={<App />}></Route>
