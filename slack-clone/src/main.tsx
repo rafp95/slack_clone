@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.scss";
@@ -7,13 +7,12 @@ import {
   Route,
   Routes,
   useNavigate,
-  useParams,
 } from "react-router-dom";
 import { Login } from "./components/Auth/Login";
 import { Register } from "./components/Auth/Register";
 import { NotFound } from "./components/NotFound/NotFound";
 
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 
 import "semantic-ui-css/semantic.min.css";
 
@@ -24,17 +23,26 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducers";
 import { setUser } from "./actions";
 import { Spinner } from "./components/Spinner/Spinner";
+import { FirebaseActionWithPayload, FirebaseUser } from "./models/FirebaseUser";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
 const Root = () => {
   const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [userData, setUserData] = useState<object>(() => {});
+
+  store.subscribe(() => {
+    const firebaseUser: FirebaseUser = store.getState()?.user;
+
+    setIsLoading(firebaseUser.isLoading);
+    setUserData(firebaseUser.currentUser);
+  });
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        const loggedUser = setUser(user);
+        const loggedUser: FirebaseActionWithPayload = setUser(user);
 
         store.dispatch({
           type: loggedUser.type,
@@ -42,7 +50,6 @@ const Root = () => {
         });
         navigateTo("/");
       }
-      setIsLoading(false);
     });
   }, []);
 

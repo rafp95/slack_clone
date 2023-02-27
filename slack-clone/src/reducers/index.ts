@@ -1,20 +1,24 @@
 import { combineReducers } from "redux";
 import * as actionTypes from "../actions/types";
+import { FirebaseUser } from "../models/FirebaseUser";
 
 const initialUserState = {
   currentUser: null,
   isLoading: true,
-};
+} as unknown as FirebaseUser;
 
-const user_reducer = (state = initialUserState, action) => {
-  switch (action.type) {
-    case actionTypes.SET_USER:
+const user_reducer = (
+  state: FirebaseUser = initialUserState,
+  action: any
+): FirebaseUser => {
+  switch (action?.type) {
+    case actionTypes?.SET_USER:
       return {
         currentUser: action?.payload?.currentUser,
         isLoading: false,
-      };
+      } as FirebaseUser;
     default:
-      return state;
+      return state as FirebaseUser;
   }
 };
 
