@@ -13,7 +13,7 @@ import { Login } from "./components/Auth/Login";
 import { Register } from "./components/Auth/Register";
 import { NotFound } from "./components/NotFound/NotFound";
 
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
 import "semantic-ui-css/semantic.min.css";
 
@@ -21,7 +21,7 @@ import { auth } from "./firebase";
 
 import { legacy_createStore as createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "./reducres";
+import rootReducer from "./reducers";
 import { setUser } from "./actions";
 import { Spinner } from "./components/Spinner/Spinner";
 
@@ -35,20 +35,19 @@ const Root = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         const loggedUser = setUser(user);
+
         store.dispatch({
           type: loggedUser.type,
-          state: loggedUser.payload,
+          payload: loggedUser.payload,
         });
-
         navigateTo("/");
       }
-
       setIsLoading(false);
     });
   }, []);
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <Spinner />
       ) : (
@@ -59,7 +58,7 @@ const Root = () => {
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       )}
-    </div>
+    </>
   );
 };
 

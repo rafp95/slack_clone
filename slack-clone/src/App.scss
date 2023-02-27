@@ -1,8 +1,8 @@
 html{
     body{
         padding: 1em;
-        .app{
-            height: 100vh;
+        .app {
+            height: calc(100vh - 2em);
             background: #eee;
         }
     }
