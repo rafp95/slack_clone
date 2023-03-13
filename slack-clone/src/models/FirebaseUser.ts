@@ -5,7 +5,7 @@ export interface FirebaseUser {
 
 export interface FirebaseActionWithPayload {
   type: string;
-  payload: {
+  payload?: {
     currentUser: object;
   };
 }

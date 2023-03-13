@@ -9,3 +9,9 @@ export const setUser = (user: object) => {
     },
   } as FirebaseActionWithPayload;
 };
+
+export const clearUser = () => {
+  return {
+    type: actionTypes.CLEAR_UER,
+  } as FirebaseActionWithPayload;
+};

@@ -17,6 +17,11 @@ const user_reducer = (
         currentUser: action?.payload?.currentUser,
         isLoading: false,
       } as FirebaseUser;
+    case actionTypes?.CLEAR_UER:
+      return {
+        ...initialUserState,
+        isLoading: false,
+      };
     default:
       return state as FirebaseUser;
   }

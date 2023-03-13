@@ -24,6 +24,7 @@ import rootReducer from "./reducers";
 import { setUser } from "./actions";
 import { Spinner } from "./components/Spinner/Spinner";
 import { FirebaseActionWithPayload, FirebaseUser } from "./models/FirebaseUser";
+import { CLEAR_UER } from "./actions/types";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
@@ -39,6 +40,12 @@ const Root = () => {
     setUserData(firebaseUser.currentUser);
   });
 
+  const clearUser = () => {
+    store.dispatch({
+      type: CLEAR_UER,
+    });
+  };
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -49,6 +56,10 @@ const Root = () => {
           payload: loggedUser.payload,
         });
         navigateTo("/");
+      } else {
+        setIsLoading(false);
+        navigateTo("/login");
+        clearUser();
       }
     });
   }, []);
