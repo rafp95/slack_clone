@@ -1,5 +1,7 @@
+import { LoggedUser } from "./LoggedUser";
+
 export interface FirebaseUser {
-  currentUser: object;
+  currentUser?: LoggedUser;
   isLoading: boolean;
 }
 

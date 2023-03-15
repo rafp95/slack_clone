@@ -1,7 +1,21 @@
-import { Dropdown, Grid, Header, Icon } from "semantic-ui-react";
+import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
 import { auth } from "../../firebase";
+import { useStore } from "react-redux";
+import { useEffect, useState } from "react";
+import { LoggedUser } from "../../models/LoggedUser";
+import { FirebaseUser } from "../../models/FirebaseUser";
+import { initialUserState } from "../../reducers";
 
 export const UserPanel = () => {
+  const [loggedUser, setLoggedUser] = useState<FirebaseUser>(initialUserState);
+  const store = useStore();
+  useEffect(() => {
+    const { user }: any = store.getState();
+    if (user) {
+      setLoggedUser(user as FirebaseUser);
+    }
+  }, []);
+
   const handleSignOut = () => {
     auth.signOut().then(() => {
       console.log("Wylogowano");
@@ -11,12 +25,7 @@ export const UserPanel = () => {
   const dropDownOptions = () => [
     {
       key: "user",
-      text: (
-        <span>
-          {" "}
-          Zalogowano jako <strong>Użytkownik</strong>{" "}
-        </span>
-      ),
+      text: <span>{loggedUser.currentUser?.email}</span>,
       disabled: true,
     },
     {
@@ -41,7 +50,15 @@ export const UserPanel = () => {
         </Grid.Row>
         {/*User Dropdown*/}
         <Header style={{ padding: ".25em" }} as="h4" inverted>
-          <Dropdown trigger={<span>User</span>} options={dropDownOptions()} />
+          <Dropdown
+            trigger={
+              <span>
+                <Image src={loggedUser.currentUser?.photoURL} avatar />
+                {loggedUser.currentUser?.displayName}
+              </span>
+            }
+            options={dropDownOptions()}
+          />
         </Header>
       </Grid.Column>
     </Grid>

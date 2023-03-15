@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import * as actionTypes from "../actions/types";
 import { FirebaseUser } from "../models/FirebaseUser";
 
-const initialUserState = {
+export const initialUserState = {
   currentUser: null,
   isLoading: true,
 } as unknown as FirebaseUser;

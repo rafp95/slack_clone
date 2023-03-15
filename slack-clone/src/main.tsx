@@ -31,13 +31,10 @@ const store = createStore(rootReducer, composeWithDevTools());
 const Root = () => {
   const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [userData, setUserData] = useState<object>(() => {});
-
   store.subscribe(() => {
     const firebaseUser: FirebaseUser = store.getState()?.user;
 
     setIsLoading(firebaseUser.isLoading);
-    setUserData(firebaseUser.currentUser);
   });
 
   const clearUser = () => {
