@@ -1,6 +1,7 @@
 import {
   Button,
   Form,
+  FormInput,
   Grid,
   Header,
   Icon,
@@ -8,17 +9,23 @@ import {
   Segment,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FormError } from "../../error-model/form.error";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { emailRegx } from "../../utils/regex.validation";
+import { toast } from "react-toastify";
+
+type inputType = "password" | "text";
+type passwordIcon = "eye" | "eye slash outline";
 
 export const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [passwordType, setPasswordType] = useState<inputType>("password");
+  const [passwordIcon, setPasswordIcon] = useState<passwordIcon>("eye");
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {
       setErrors((prevState: FormError[]) => {
@@ -80,6 +87,7 @@ export const Login = () => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((signedUser) => {
+        toast.success("Zalogowano");
         console.log(signedUser);
         setLoading(false);
       })
@@ -101,6 +109,21 @@ export const Login = () => {
     return errors.some((_) => _.fieldName === inputName || _.allInputCheck)
       ? "error"
       : "";
+  };
+
+  const changePasswordInputType = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    setPasswordType((prevState) => {
+      if (prevState === "password") {
+        prevState = "text";
+        setPasswordIcon("eye slash outline");
+      } else {
+        setPasswordIcon("eye");
+        prevState = "password";
+      }
+      return prevState;
+    });
   };
 
   return (
@@ -136,9 +159,13 @@ export const Login = () => {
               iconPosition="left"
               placeholder="Hasło"
               className={handleInputError("password")}
-              type="password"
+              type={passwordType}
               onChange={handleChange}
               value={password}
+              action={{
+                icon: passwordIcon,
+                onClick: changePasswordInputType,
+              }}
             />
             <Button
               disabled={loading}

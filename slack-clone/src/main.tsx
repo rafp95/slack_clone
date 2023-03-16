@@ -28,6 +28,9 @@ import { CLEAR_UER } from "./actions/types";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Root = () => {
   const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -62,7 +65,7 @@ const Root = () => {
   }, []);
 
   return (
-    <>
+    <div>
       {isLoading ? (
         <Spinner />
       ) : (
@@ -73,7 +76,8 @@ const Root = () => {
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       )}
-    </>
+      <ToastContainer position="bottom-left" />
+    </div>
   );
 };
 

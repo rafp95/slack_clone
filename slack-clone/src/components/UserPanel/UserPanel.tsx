@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { LoggedUser } from "../../models/LoggedUser";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import { initialUserState } from "../../reducers";
+import { toast } from "react-toastify";
 
 export const UserPanel = () => {
   const [loggedUser, setLoggedUser] = useState<FirebaseUser>(initialUserState);
@@ -18,7 +19,7 @@ export const UserPanel = () => {
 
   const handleSignOut = () => {
     auth.signOut().then(() => {
-      console.log("Wylogowano");
+      toast.info("Wylogowano");
     });
   };
 
@@ -34,7 +35,7 @@ export const UserPanel = () => {
     },
     {
       key: "signout",
-      text: <span onClick={handleSignOut}>Wyloguj</span>,
+      text: <div onClick={handleSignOut}>Wyloguj</div>,
     },
   ];
 
