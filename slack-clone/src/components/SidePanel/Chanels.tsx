@@ -5,7 +5,7 @@ import { getPropName } from "../../utilitis/propName";
 import { toast } from "react-toastify";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import uuid from "react-uuid";
-import { child, getDatabase, ref, set, get } from "firebase/database";
+import { addChannels, getChannels } from "../../api/Api.Firebase";
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -15,9 +15,6 @@ const channelDetailsDefault = {
 export interface ChannelsProps {
   loggedUser: FirebaseUser;
 }
-
-const db = getDatabase();
-const keyName = "channels";
 
 export const Channels = ({ loggedUser }: ChannelsProps) => {
   const [channelDetails, setChannelDetails] = useState<ChannelDetails>(
@@ -33,18 +30,14 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   const [refreshList, setRefreshList] = useState<boolean>(false);
 
   useEffect(() => {
-    const channelsRef = ref(db, keyName).ref;
-    get(channelsRef).then((data) => {
+    getChannels().then((data) => {
       console.log(data.val());
       setLoadedChannels(Object.values(data.val()));
     });
   }, [refreshList]);
 
   const addChannel = () => {
-    const channelsRef = ref(db, keyName).ref;
-
     const key = uuid();
-
     const newChannel = {
       id: key,
       name: channelDetails.channelName,
@@ -55,9 +48,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       },
     };
 
-    set(child(channelsRef, key ?? ""), {
-      ...newChannel,
-    })
+    addChannels(key, newChannel)
       .then(() => {
         setLoadedChannels((prevState) => {
           prevState = [];

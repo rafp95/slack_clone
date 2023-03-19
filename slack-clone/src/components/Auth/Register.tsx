@@ -19,6 +19,7 @@ import { FormError } from "../../error-model/form.error";
 import md5 from "md5";
 import { getDatabase, ref, set } from "firebase/database";
 import { emailRegx } from "../../utils/regex.validation";
+import { createUser } from "../../api/Api.Firebase";
 
 export const Register = () => {
   const [username, setUsername] = useState<string>("");
@@ -181,12 +182,7 @@ export const Register = () => {
   };
 
   const saveUser = (createdUser: UserCredential) => {
-    const db = getDatabase();
-    set(ref(db, `users/${createdUser.user.uid}`), {
-      username: createdUser.user?.displayName,
-      email: createdUser.user?.displayName,
-      profile_picture: createdUser.user?.photoURL,
-    })
+    createUser(createdUser)
       .then(() => {
         console.log("Konto zapisane");
       })
