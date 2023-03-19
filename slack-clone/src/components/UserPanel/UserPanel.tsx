@@ -7,16 +7,11 @@ import { FirebaseUser } from "../../models/FirebaseUser";
 import { initialUserState } from "../../reducers";
 import { toast } from "react-toastify";
 
-export const UserPanel = () => {
-  const [loggedUser, setLoggedUser] = useState<FirebaseUser>(initialUserState);
-  const store = useStore();
-  useEffect(() => {
-    const { user }: any = store.getState();
-    if (user) {
-      setLoggedUser(user as FirebaseUser);
-    }
-  }, []);
+export interface UserPanelProps {
+  loggedUser: FirebaseUser;
+}
 
+export const UserPanel = ({ loggedUser }: UserPanelProps) => {
   const handleSignOut = () => {
     auth.signOut().then(() => {
       toast.info("Wylogowano");
