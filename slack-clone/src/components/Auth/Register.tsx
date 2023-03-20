@@ -8,7 +8,7 @@ import {
   Segment,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -20,6 +20,7 @@ import md5 from "md5";
 import { getDatabase, ref, set } from "firebase/database";
 import { emailRegx } from "../../utils/regex.validation";
 import { createUser } from "../../api/Api.Firebase";
+import { PasswordInput } from "./PasswordInput";
 
 export const Register = () => {
   const [username, setUsername] = useState<string>("");
@@ -29,6 +30,7 @@ export const Register = () => {
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountCreated, setAccountCreated] = useState<boolean>(false);
+
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {
       setErrors((prevState: FormError[]) => {
@@ -237,16 +239,10 @@ export const Register = () => {
               onChange={handleChange}
               value={email}
             />
-            <Form.Input
-              fluid
-              name="password"
-              icon="lock"
-              iconPosition="left"
-              placeholder="Hasło"
-              className={handleInputError("password")}
-              type="password"
-              onChange={handleChange}
-              value={password}
+            <PasswordInput
+              handleInputError={handleInputError("password")}
+              handleChange={handleChange}
+              password={password}
             />
             <Form.Input
               fluid

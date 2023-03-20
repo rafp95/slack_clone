@@ -4,6 +4,13 @@ html{
         .app {
             height: calc(100vh - 2em);
             background: #eee;
+
+            .showHidePassword {
+                cursor: auto;
+                i{
+                    cursor: pointer;
+                }
+            }
         }
     }
 }

@@ -15,17 +15,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { emailRegx } from "../../utils/regex.validation";
 import { toast } from "react-toastify";
-
-type inputType = "password" | "text";
-type passwordIcon = "eye" | "eye slash outline";
+import { PasswordInput } from "./PasswordInput";
 
 export const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [passwordType, setPasswordType] = useState<inputType>("password");
-  const [passwordIcon, setPasswordIcon] = useState<passwordIcon>("eye");
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {
       setErrors((prevState: FormError[]) => {
@@ -63,8 +59,6 @@ export const Login = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-
     const { name = "", value = "" } = e.target;
     switch (name) {
       case "email":
@@ -74,6 +68,8 @@ export const Login = () => {
         setPassword(value);
         break;
     }
+
+    return false;
   };
 
   const handleSubmit = () => {
@@ -113,24 +109,6 @@ export const Login = () => {
       : "";
   };
 
-  const changePasswordInputType = (e: React.FormEvent<HTMLInputElement>) => {
-    const { type = "" }: any = e;
-    const { tagName = "" }: any = e.target;
-    if (type.toUpperCase() === "CLICK" && tagName.toUpperCase() === "I") {
-      e.preventDefault();
-      setPasswordType((prevState) => {
-        if (prevState === "password") {
-          prevState = "text";
-          setPasswordIcon("eye slash outline");
-        } else {
-          setPasswordIcon("eye");
-          prevState = "password";
-        }
-        return prevState;
-      });
-    }
-  };
-
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
       <Grid.Column style={{ maxWidth: 450 }}>
@@ -157,20 +135,10 @@ export const Login = () => {
               onChange={handleChange}
               value={email}
             />
-            <Form.Input
-              fluid
-              name="password"
-              icon="lock"
-              iconPosition="left"
-              placeholder="Hasło"
-              className={handleInputError("password")}
-              type={passwordType}
-              onChange={handleChange}
-              value={password}
-              action={{
-                icon: passwordIcon,
-                onClick: changePasswordInputType,
-              }}
+            <PasswordInput
+              handleInputError={handleInputError("password")}
+              handleChange={handleChange}
+              password={password}
             />
             <Button
               disabled={loading}
