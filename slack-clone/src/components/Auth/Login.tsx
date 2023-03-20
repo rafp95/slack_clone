@@ -63,6 +63,8 @@ export const Login = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
     const { name = "", value = "" } = e.target;
     switch (name) {
       case "email":
@@ -112,18 +114,21 @@ export const Login = () => {
   };
 
   const changePasswordInputType = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault();
-
-    setPasswordType((prevState) => {
-      if (prevState === "password") {
-        prevState = "text";
-        setPasswordIcon("eye slash outline");
-      } else {
-        setPasswordIcon("eye");
-        prevState = "password";
-      }
-      return prevState;
-    });
+    const { type = "" }: any = e;
+    const { tagName = "" }: any = e.target;
+    if (type.toUpperCase() === "CLICK" && tagName.toUpperCase() === "I") {
+      e.preventDefault();
+      setPasswordType((prevState) => {
+        if (prevState === "password") {
+          prevState = "text";
+          setPasswordIcon("eye slash outline");
+        } else {
+          setPasswordIcon("eye");
+          prevState = "password";
+        }
+        return prevState;
+      });
+    }
   };
 
   return (
