@@ -15,6 +15,7 @@ import { legacy_createStore as createStore } from "redux";
 import rootReducer from "../../reducers";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { CURRENT_CHANNEL } from "../../actions/types";
+import { onValue } from "firebase/database";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
@@ -32,6 +33,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     channelDetailsDefault
   );
   const [loadedChannels, setLoadedChannels] = useState<ChanelDto[]>([]);
+  const [selectedChannel, setSelectedChannel] = useState<ChanelDto | null>();
+
   const [channels, setChannels] = useState<Channel>({
     channels: [],
     modal: false,
@@ -39,7 +42,6 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     chanelDetails: "",
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
-  const [selectedChannel, setSelectedChannel] = useState<ChanelDto>();
   const api = useApi();
 
   store.subscribe(() => {
@@ -48,12 +50,23 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   });
 
   useEffect(() => {
-    api.getChannels().then((data) => {
-      console.log(data.val());
-      setLoadedChannels(Object.values(data.val()));
-
-      if (Object.values(data.val()).length && !selectedChannel?.id) {
-        setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
+    // api.getChannels().then((data) => {
+    //   console.log(data.val());
+    //   setLoadedChannels(Object.values(data.val()));
+    //
+    //   if (Object.values(data.val()).length && !selectedChannel?.id) {
+    //     setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
+    //   }
+    // });
+    onValue(api.getRef(), (data) => {
+      if (data.val()) {
+        setLoadedChannels(Object.values(data.val()) as ChanelDto[]);
+        if (Object.values(data.val()).length && !selectedChannel?.id) {
+          setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
+        }
+      } else {
+        setLoadedChannels([]);
+        setSelectedChannel(null);
       }
     });
   }, [refreshList]);

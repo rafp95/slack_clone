@@ -1,13 +1,14 @@
 import { child, get, getDatabase, ref, set, onValue } from "firebase/database";
 import { UserCredential } from "firebase/auth";
+import { ChanelDto } from "../models/Channel";
 
 const db = getDatabase();
 const keyName = "channels";
 const channelsRef = ref(db, keyName).ref;
 
 export class FirebaseApi {
-  getChannels = () => {
-    return get(channelsRef);
+  getRef = () => {
+    return ref(db, keyName);
   };
 
   addChannels = (key: string, newChannel: any) => {
