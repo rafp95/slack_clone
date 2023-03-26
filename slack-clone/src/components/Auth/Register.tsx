@@ -19,8 +19,8 @@ import { FormError } from "../../error-model/form.error";
 import md5 from "md5";
 import { getDatabase, ref, set } from "firebase/database";
 import { emailRegx } from "../../utils/regex.validation";
-import { createUser } from "../../api/Api.Firebase";
 import { PasswordInput } from "./PasswordInput";
+import { useApi } from "../../api/useApi";
 
 export const Register = () => {
   const [username, setUsername] = useState<string>("");
@@ -30,6 +30,8 @@ export const Register = () => {
   const [errors, setErrors] = useState<FormError[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountCreated, setAccountCreated] = useState<boolean>(false);
+
+  const api = useApi();
 
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {
@@ -184,7 +186,8 @@ export const Register = () => {
   };
 
   const saveUser = (createdUser: UserCredential) => {
-    createUser(createdUser)
+    api
+      .createUser(createdUser)
       .then(() => {
         console.log("Konto zapisane");
       })

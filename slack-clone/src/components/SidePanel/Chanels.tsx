@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Icon, Input, Menu, Modal } from "semantic-ui-react";
-import { ChanelDto, Channel, ChannelDetails } from "../../models/Channel";
+import {
+  ChanelDto,
+  Channel,
+  ChannelActionWithPayload,
+  ChannelDetails,
+} from "../../models/Channel";
 import { getPropName } from "../../utilitis/propName";
 import { toast } from "react-toastify";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import uuid from "react-uuid";
-import { addChannels, getChannels } from "../../api/Api.Firebase";
+import { useApi } from "../../api/useApi";
+import { legacy_createStore as createStore } from "redux";
+import rootReducer from "../../reducers";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { CURRENT_CHANNEL } from "../../actions/types";
+
+const store = createStore(rootReducer, composeWithDevTools());
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -28,9 +39,16 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     chanelDetails: "",
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
+  const [selectedChannel, setSelectedChannel] = useState<ChanelDto>();
+  const api = useApi();
+
+  store.subscribe(() => {
+    const { currentChannel = {} } = store.getState()?.channel;
+    setSelectedChannel(currentChannel as ChanelDto);
+  });
 
   useEffect(() => {
-    getChannels().then((data) => {
+    api.getChannels().then((data) => {
       console.log(data.val());
       setLoadedChannels(Object.values(data.val()));
     });
@@ -48,7 +66,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       },
     };
 
-    addChannels(key, newChannel)
+    api
+      .addChannels(key, newChannel)
       .then(() => {
         setLoadedChannels((prevState) => {
           prevState = [];
@@ -106,6 +125,17 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     }
   };
 
+  const handleChannel = (channel: any) => {
+    store.dispatch({
+      type: CURRENT_CHANNEL,
+      payload: {
+        currentChannel: channel,
+      },
+    } as ChannelActionWithPayload);
+
+    toast.success("Zmieniono kanał");
+  };
+
   return (
     <>
       <Menu.Menu style={{ paddingBottom: "2em" }}>
@@ -120,10 +150,11 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
           loadedChannels.map((channel: ChanelDto) => {
             return (
               <Menu.Item
+                className={selectedChannel?.id === channel.id ? "active" : ""}
                 key={channel.id}
                 name={channel.name}
                 style={{ opacity: 0.7 }}
-                onClick={() => console.log(channel)}
+                onClick={() => handleChannel(channel)}
               >
                 # {channel.name}
               </Menu.Item>

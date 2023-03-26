@@ -1,3 +1,5 @@
+import { CURRENT_CHANNEL } from "../actions/types";
+
 export interface ChannelDetails {
   channelName: string;
   channelDetails: string;
@@ -18,4 +20,11 @@ export interface ChanelDto {
   details: string;
   id: string;
   name: string;
+}
+
+export interface ChannelActionWithPayload {
+  type: string;
+  payload?: {
+    currentChannel: object;
+  };
 }

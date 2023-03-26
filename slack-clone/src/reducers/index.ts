@@ -1,6 +1,11 @@
 import { combineReducers } from "redux";
 import * as actionTypes from "../actions/types";
 import { FirebaseUser } from "../models/FirebaseUser";
+import { ChannelActionWithPayload } from "../models/Channel";
+
+/*
+User actions
+ */
 
 export const initialUserState = {
   currentUser: null,
@@ -27,8 +32,33 @@ const user_reducer = (
   }
 };
 
+/*
+Channel actions
+ */
+
+const initialChannelState = {
+  currentChannel: null,
+};
+
+const channel_reducer = (
+  state = initialChannelState,
+  action: ChannelActionWithPayload
+) => {
+  switch (action.type) {
+    case actionTypes.CURRENT_CHANNEL:
+      return {
+        ...state,
+        currentChannel: action.payload?.currentChannel,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   user: user_reducer,
+  channel: channel_reducer,
 });
 
 export default rootReducer;
