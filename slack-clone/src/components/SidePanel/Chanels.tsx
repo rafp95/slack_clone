@@ -51,6 +51,10 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     api.getChannels().then((data) => {
       console.log(data.val());
       setLoadedChannels(Object.values(data.val()));
+
+      if (Object.values(data.val()).length && !selectedChannel?.id) {
+        setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
+      }
     });
   }, [refreshList]);
 
@@ -133,7 +137,13 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       },
     } as ChannelActionWithPayload);
 
-    toast.success("Zmieniono kanał");
+    let text = "";
+    if (selectedChannel?.id) {
+      text = "Zmieniono kanał";
+    } else {
+      text = "Wybrano kanał";
+    }
+    toast.success(text);
   };
 
   return (
