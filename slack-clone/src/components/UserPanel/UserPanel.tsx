@@ -1,10 +1,6 @@
 import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
 import { auth } from "../../firebase";
-import { useStore } from "react-redux";
-import { useEffect, useState } from "react";
-import { LoggedUser } from "../../models/LoggedUser";
 import { FirebaseUser } from "../../models/FirebaseUser";
-import { initialUserState } from "../../reducers";
 import { toast } from "react-toastify";
 
 export interface UserPanelProps {

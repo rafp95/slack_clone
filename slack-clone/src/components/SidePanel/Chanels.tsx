@@ -43,6 +43,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
   const api = useApi();
+  api.setChannelsRef("channels");
 
   store.subscribe(() => {
     const { currentChannel = {} } = store.getState()?.channel;
@@ -58,7 +59,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     //     setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
     //   }
     // });
-    onValue(api.getRef(), (data) => {
+    onValue(api.channelsRef(), (data) => {
       if (data.val()) {
         setLoadedChannels(Object.values(data.val()) as ChanelDto[]);
         if (Object.values(data.val()).length && !selectedChannel?.id) {

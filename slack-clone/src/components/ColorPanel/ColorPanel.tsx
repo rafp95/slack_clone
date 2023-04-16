@@ -10,9 +10,15 @@ export const ColorPanel = () => {
         vertical
         visible
         width="very thin"
+        style={{ width: "64px", maxWidth: "64px" }}
       >
         <Divider />
-        <Button icon="add" size="small" color="blue" />
+        <Button
+          icon="add"
+          size="small"
+          color="blue"
+          style={{ margin: "0", padding: "10px" }}
+        />
       </Sidebar>
       ;
     </>
