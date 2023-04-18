@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Icon, Input, Menu, Modal } from "semantic-ui-react";
 import {
-  ChanelDto,
+  ChannelDto,
   Channel,
   ChannelActionWithPayload,
   ChannelDetails,
@@ -11,13 +11,11 @@ import { toast } from "react-toastify";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import uuid from "react-uuid";
 import { useApi } from "../../api/useApi";
-import { legacy_createStore as createStore } from "redux";
-import rootReducer from "../../reducers";
-import { composeWithDevTools } from "redux-devtools-extension";
 import { CURRENT_CHANNEL } from "../../actions/types";
 import { onValue } from "firebase/database";
-
-const store = createStore(rootReducer, composeWithDevTools());
+import { store } from "../../actions/reducer";
+import { initialUserState } from "../../reducers";
+import { useStore } from "react-redux";
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -32,8 +30,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   const [channelDetails, setChannelDetails] = useState<ChannelDetails>(
     channelDetailsDefault
   );
-  const [loadedChannels, setLoadedChannels] = useState<ChanelDto[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState<ChanelDto | null>();
+  const [loadedChannels, setLoadedChannels] = useState<ChannelDto[]>([]);
+  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
 
   const [channels, setChannels] = useState<Channel>({
     channels: [],
@@ -42,12 +40,11 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     chanelDetails: "",
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
-  const api = useApi();
-  api.setChannelsRef("channels");
+  const api = useApi("channels");
 
   store.subscribe(() => {
     const { currentChannel = {} } = store.getState()?.channel;
-    setSelectedChannel(currentChannel as ChanelDto);
+    setSelectedChannel(currentChannel as ChannelDto);
   });
 
   useEffect(() => {
@@ -61,9 +58,10 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     // });
     onValue(api.channelsRef(), (data) => {
       if (data.val()) {
-        setLoadedChannels(Object.values(data.val()) as ChanelDto[]);
+        setLoadedChannels(Object.values(data.val()) as ChannelDto[]);
         if (Object.values(data.val()).length && !selectedChannel?.id) {
-          setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
+          setSelectedChannel(Object.values(data.val())[0] as ChannelDto);
+          publishChannel(Object.values(data.val())[0] as ChannelDto);
         }
       } else {
         setLoadedChannels([]);
@@ -143,13 +141,17 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     }
   };
 
-  const handleChannel = (channel: any) => {
+  function publishChannel(channel: any) {
     store.dispatch({
       type: CURRENT_CHANNEL,
       payload: {
         currentChannel: channel,
       },
     } as ChannelActionWithPayload);
+  }
+
+  const handleChannel = (channel: any) => {
+    publishChannel(channel);
 
     let text = "";
     if (selectedChannel?.id) {
@@ -171,7 +173,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
         </Menu.Item>
         {/*Channels*/}
         {loadedChannels.length > 0 &&
-          loadedChannels.map((channel: ChanelDto) => {
+          loadedChannels.map((channel: ChannelDto) => {
             return (
               <Menu.Item
                 className={selectedChannel?.id === channel.id ? "active" : ""}

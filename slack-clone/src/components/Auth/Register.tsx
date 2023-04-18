@@ -31,7 +31,7 @@ export const Register = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [accountCreated, setAccountCreated] = useState<boolean>(false);
 
-  const api = useApi();
+  const api = useApi("channels");
 
   const isFormValid = (): boolean => {
     if (isFormEmpty()) {

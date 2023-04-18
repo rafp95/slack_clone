@@ -16,6 +16,10 @@ import { auth } from "../../firebase";
 import { emailRegx } from "../../utils/regex.validation";
 import { toast } from "react-toastify";
 import { PasswordInput } from "./PasswordInput";
+import { store } from "../../actions/reducer";
+import { SET_USER } from "../../actions/types";
+import { setUser } from "../../actions";
+import { FirebaseActionWithPayload } from "../../models/FirebaseUser";
 
 export const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -87,6 +91,9 @@ export const Login = () => {
       .then((signedUser) => {
         toast.success("Zalogowano");
         console.log(signedUser);
+
+        store.dispatch(setUser(signedUser));
+
         setLoading(false);
       })
       .catch((err) => {

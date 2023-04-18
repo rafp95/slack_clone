@@ -6,16 +6,11 @@ import { FirebaseUser } from "../../models/FirebaseUser";
 import { initialUserState } from "../../reducers";
 import { useStore } from "react-redux";
 
-export const SidePanel = () => {
-  const [loggedUser, setLoggedUser] = useState<FirebaseUser>(initialUserState);
-  const store = useStore();
-  useEffect(() => {
-    const { user }: any = store.getState();
-    if (user) {
-      setLoggedUser(user as FirebaseUser);
-    }
-  }, []);
+interface SidePanelProps {
+  loggedUser: FirebaseUser;
+}
 
+export const SidePanel = ({ loggedUser }: SidePanelProps) => {
   return (
     <Menu
       size="large"

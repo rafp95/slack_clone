@@ -12,7 +12,7 @@ export interface Channel {
   chanelDetails: string;
 }
 
-export interface ChanelDto {
+export interface ChannelDto {
   createdBy: {
     avatar: string;
     name: string;

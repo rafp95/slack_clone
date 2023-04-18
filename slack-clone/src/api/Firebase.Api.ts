@@ -1,15 +1,14 @@
 import { child, get, getDatabase, ref, set, onValue } from "firebase/database";
 import { UserCredential } from "firebase/auth";
-import { ChanelDto } from "../models/Channel";
-import { DatabaseCollenctionName } from "./DatabaseCollenctionName";
+import { ChannelDto } from "../models/Channel";
+import { DatabaseCollectionName } from "./DatabaseCollectionName";
 
 const db = getDatabase();
 
 export class FirebaseApi {
-  private _databaseKeyName?: DatabaseCollenctionName;
-
-  setChannelsRef(_databaseKeyName: DatabaseCollenctionName) {
-    this._databaseKeyName = _databaseKeyName;
+  private readonly _databaseKeyName?: DatabaseCollectionName;
+  constructor(databaseKeyName: DatabaseCollectionName) {
+    this._databaseKeyName = databaseKeyName;
   }
 
   channelsRef() {
@@ -28,5 +27,9 @@ export class FirebaseApi {
       email: createdUser.user?.displayName,
       profile_picture: createdUser.user?.photoURL,
     });
+  };
+
+  createMessage = () => {
+    return set(ref(db, "fds"), {});
   };
 }

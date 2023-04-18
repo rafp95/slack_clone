@@ -24,12 +24,13 @@ import rootReducer from "./reducers";
 import { setUser } from "./actions";
 import { Spinner } from "./components/Spinner/Spinner";
 import { FirebaseActionWithPayload, FirebaseUser } from "./models/FirebaseUser";
-import { CLEAR_UER } from "./actions/types";
+import { CLEAR_UER, CURRENT_CHANNEL, SET_USER } from "./actions/types";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LoggedUser } from "./models/LoggedUser";
 
 const Root = () => {
   const navigateTo = useNavigate();
@@ -53,7 +54,7 @@ const Root = () => {
 
         store.dispatch({
           type: loggedUser.type,
-          payload: loggedUser.payload,
+          payload: loggedUser.payload?.currentUser,
         });
         navigateTo("/");
       } else {
