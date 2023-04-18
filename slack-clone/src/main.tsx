@@ -35,9 +35,12 @@ import { LoggedUser } from "./models/LoggedUser";
 const Root = () => {
   const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loggedUser, setLoggedUser] = useState<LoggedUser>();
+
   store.subscribe(() => {
     const firebaseUser: FirebaseUser = store.getState()?.user;
 
+    setLoggedUser(firebaseUser?.currentUser);
     setIsLoading(firebaseUser.isLoading);
   });
 
@@ -52,10 +55,7 @@ const Root = () => {
       if (user) {
         const loggedUser: FirebaseActionWithPayload = setUser(user);
 
-        store.dispatch({
-          type: loggedUser.type,
-          payload: loggedUser.payload?.currentUser,
-        });
+        store.dispatch(loggedUser);
         navigateTo("/");
       } else {
         setIsLoading(false);
@@ -71,7 +71,7 @@ const Root = () => {
         <Spinner />
       ) : (
         <Routes>
-          <Route path="/" element={<App />}></Route>
+          <Route path="/" element={<App loggedUser={loggedUser} />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="*" element={<NotFound />}></Route>

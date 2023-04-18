@@ -10,17 +10,13 @@ import { ChannelDto } from "./models/Channel";
 import { FirebaseUser } from "./models/FirebaseUser";
 import { initialUserState } from "./reducers";
 import { useStore } from "react-redux";
+import { LoggedUser } from "./models/LoggedUser";
 
-const App = () => {
-  const [loggedUser, setLoggedUser] = useState<FirebaseUser>(initialUserState);
+interface AppProps {
+  loggedUser?: LoggedUser;
+}
 
-  store.subscribe(() => {
-    const user: FirebaseUser = store.getState()?.user;
-    if (user && user.currentUser) {
-      setLoggedUser(user as FirebaseUser);
-    }
-  });
-
+const App = ({ loggedUser }: AppProps) => {
   return (
     <Grid columns="equal" className="app" style={{ background: "#eee" }}>
       <ColorPanel />

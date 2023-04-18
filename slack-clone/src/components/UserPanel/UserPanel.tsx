@@ -2,9 +2,10 @@ import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
 import { auth } from "../../firebase";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import { toast } from "react-toastify";
+import { LoggedUser } from "../../models/LoggedUser";
 
 export interface UserPanelProps {
-  loggedUser: FirebaseUser;
+  loggedUser?: LoggedUser;
 }
 
 export const UserPanel = ({ loggedUser }: UserPanelProps) => {
@@ -17,7 +18,7 @@ export const UserPanel = ({ loggedUser }: UserPanelProps) => {
   const dropDownOptions = () => [
     {
       key: "user",
-      text: <span>{loggedUser.currentUser?.email}</span>,
+      text: <span>{loggedUser?.email}</span>,
       disabled: true,
     },
     {
@@ -45,8 +46,8 @@ export const UserPanel = ({ loggedUser }: UserPanelProps) => {
           <Dropdown
             trigger={
               <span>
-                <Image src={loggedUser.currentUser?.photoURL} avatar />
-                {loggedUser.currentUser?.displayName}
+                <Image src={loggedUser?.photoURL} avatar />
+                {loggedUser?.displayName}
               </span>
             }
             options={dropDownOptions()}

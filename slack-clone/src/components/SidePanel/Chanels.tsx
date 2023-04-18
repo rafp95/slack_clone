@@ -16,6 +16,7 @@ import { onValue } from "firebase/database";
 import { store } from "../../actions/reducer";
 import { initialUserState } from "../../reducers";
 import { useStore } from "react-redux";
+import { LoggedUser } from "../../models/LoggedUser";
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -23,7 +24,7 @@ const channelDetailsDefault = {
 } as ChannelDetails;
 
 export interface ChannelsProps {
-  loggedUser: FirebaseUser;
+  loggedUser?: LoggedUser;
 }
 
 export const Channels = ({ loggedUser }: ChannelsProps) => {
@@ -77,8 +78,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       name: channelDetails.channelName,
       details: channelDetails.channelDetails,
       createdBy: {
-        name: loggedUser.currentUser?.displayName,
-        avatar: loggedUser.currentUser?.photoURL,
+        name: loggedUser?.displayName,
+        avatar: loggedUser?.photoURL,
       },
     };
 

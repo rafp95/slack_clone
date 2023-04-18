@@ -5,9 +5,10 @@ import { Channels } from "./Chanels";
 import { FirebaseUser } from "../../models/FirebaseUser";
 import { initialUserState } from "../../reducers";
 import { useStore } from "react-redux";
+import { LoggedUser } from "../../models/LoggedUser";
 
 interface SidePanelProps {
-  loggedUser: FirebaseUser;
+  loggedUser?: LoggedUser;
 }
 
 export const SidePanel = ({ loggedUser }: SidePanelProps) => {

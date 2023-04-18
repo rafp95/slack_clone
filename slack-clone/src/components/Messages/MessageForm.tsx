@@ -9,13 +9,13 @@ import { FirebaseUser } from "../../models/FirebaseUser";
 interface MessageFormProps {
   messagesRef: FirebaseApi;
   currentChannel?: ChannelDto;
-  currentUser?: FirebaseUser;
+  LoggedUser?: LoggedUser;
 }
 
 export const MessageForm = ({
   messagesRef,
   currentChannel,
-  currentUser,
+  LoggedUser,
 }: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {

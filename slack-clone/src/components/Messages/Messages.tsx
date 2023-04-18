@@ -9,7 +9,7 @@ import { LoggedUser } from "../../models/LoggedUser";
 import { FirebaseUser } from "../../models/FirebaseUser";
 
 interface MessagesProps {
-  loggedUser: FirebaseUser;
+  loggedUser?: LoggedUser;
 }
 
 export const Messages = ({ loggedUser }: MessagesProps) => {
@@ -32,7 +32,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
       <MessageForm
         messagesRef={api}
         currentChannel={currentChannel}
-        currentUser={loggedUser}
+        LoggedUser={loggedUser}
       />
     </React.Fragment>
   );
