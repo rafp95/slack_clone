@@ -39,8 +39,9 @@ export const MessageForm = ({
   };
 
   const sendMessage = () => {
-    if (!message.trim().length) {
+    if (message.trim().length == 0) {
       toast.error("Wprowadż wiadomość");
+      return;
     }
 
     api
