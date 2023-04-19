@@ -4,18 +4,19 @@ import { FirebaseApi } from "../../api/Firebase.Api";
 import { toast } from "react-toastify";
 import { ChannelDto } from "../../models/Channel";
 import { LoggedUser } from "../../models/LoggedUser";
-import { FirebaseUser } from "../../models/FirebaseUser";
-
+import moment from "moment";
+import { useApi } from "../../api/useApi";
+import uuid from "react-uuid";
 interface MessageFormProps {
   messagesRef: FirebaseApi;
   currentChannel?: ChannelDto;
-  LoggedUser?: LoggedUser;
+  loggedUser?: LoggedUser;
 }
 
 export const MessageForm = ({
   messagesRef,
   currentChannel,
-  LoggedUser,
+  loggedUser,
 }: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -23,10 +24,34 @@ export const MessageForm = ({
     setMessage(value);
   };
 
+  const api = useApi("messages");
+
+  const createMessage = () => {
+    return {
+      timestamp: moment().unix(),
+      user: {
+        id: loggedUser?.uid,
+        name: loggedUser?.displayName,
+        avatar: loggedUser?.photoURL,
+      },
+      content: message,
+    };
+  };
+
   const sendMessage = () => {
     if (!message.trim().length) {
       toast.error("Wprowadż wiadomość");
     }
+
+    api
+      .createMessage(uuid(), createMessage())
+      .then(() => {
+        setMessage("");
+        toast.success("Dodano wiadomość");
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
   };
 
   return (
@@ -39,6 +64,7 @@ export const MessageForm = ({
           placeholder="Napisz wiadomość"
           style={{ marginBottom: ".7em" }}
           label={<Button icon={"add"} />}
+          value={message}
         />
         <Button.Group icon widths="2">
           <Button

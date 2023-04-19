@@ -31,7 +31,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
       <MessageForm
         messagesRef={api}
         currentChannel={currentChannel}
-        LoggedUser={loggedUser}
+        loggedUser={loggedUser}
       />
     </React.Fragment>
   );

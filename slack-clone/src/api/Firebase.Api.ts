@@ -6,7 +6,7 @@ import { DatabaseCollectionName } from "./DatabaseCollectionName";
 const db = getDatabase();
 
 export class FirebaseApi {
-  private readonly _databaseKeyName?: DatabaseCollectionName;
+  private readonly _databaseKeyName: DatabaseCollectionName;
   constructor(databaseKeyName: DatabaseCollectionName) {
     this._databaseKeyName = databaseKeyName;
   }
@@ -29,7 +29,9 @@ export class FirebaseApi {
     });
   };
 
-  createMessage = () => {
-    return set(ref(db, "fds"), {});
+  createMessage = (key: string, message: any) => {
+    return set(child(this.channelsRef(), key), {
+      ...message,
+    });
   };
 }
