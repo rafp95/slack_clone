@@ -6,7 +6,6 @@ import { useApi } from "../../api/useApi";
 import { ChannelDto } from "../../models/Channel";
 import { store } from "../../actions/reducer";
 import { LoggedUser } from "../../models/LoggedUser";
-import { FirebaseUser } from "../../models/FirebaseUser";
 
 interface MessagesProps {
   loggedUser?: LoggedUser;

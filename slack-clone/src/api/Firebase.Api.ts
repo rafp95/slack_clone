@@ -16,7 +16,7 @@ export class FirebaseApi {
   }
 
   addChannels = (key: string, newChannel: any) => {
-    return set(child(this.channelsRef(), this._databaseKeyName ?? "channels"), {
+    return set(child(this.channelsRef(), key), {
       ...newChannel,
     });
   };

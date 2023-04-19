@@ -85,7 +85,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
 
     api
       .addChannels(key, newChannel)
-      .then(() => {
+      .then((data) => {
+        console.log(data);
         setLoadedChannels((prevState) => {
           prevState = [];
           return prevState;
