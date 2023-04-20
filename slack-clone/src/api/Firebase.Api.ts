@@ -11,12 +11,12 @@ export class FirebaseApi {
     this._databaseKeyName = databaseKeyName;
   }
 
-  channelsRef() {
+  databaseRef() {
     return ref(db, this._databaseKeyName).ref;
   }
 
   addChannels = (key: string, newChannel: any) => {
-    return set(child(this.channelsRef(), key), {
+    return set(child(this.databaseRef(), key), {
       ...newChannel,
     });
   };
@@ -30,12 +30,8 @@ export class FirebaseApi {
   };
 
   createMessage = (key: string, message: any) => {
-    return set(child(this.channelsRef(), key), {
+    return set(child(this.databaseRef(), key), {
       ...message,
     });
   };
-
-  messagesRef() {
-    return ref(db, this._databaseKeyName).ref;
-  }
 }

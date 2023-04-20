@@ -21,7 +21,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
   });
 
   useEffect(() => {
-    onValue(api.messagesRef(), (data) => {
+    onValue(api.databaseRef(), (data) => {
       if (data.val()) {
         console.log(data.val());
       }

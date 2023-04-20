@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Icon, Input, Menu, Modal } from "semantic-ui-react";
+import {
+  Button,
+  Form,
+  Icon,
+  Input,
+  Loader,
+  Menu,
+  Modal,
+} from "semantic-ui-react";
 import {
   ChannelDto,
   Channel,
@@ -29,6 +37,7 @@ export interface ChannelsProps {
 
 export const Channels = ({ loggedUser }: ChannelsProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isChannelLoading, setIsChannelLoading] = useState<boolean>(true);
 
   const [channelDetails, setChannelDetails] = useState<ChannelDetails>(
     channelDetailsDefault
@@ -59,7 +68,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     //     setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
     //   }
     // });
-    onValue(api.channelsRef(), (data) => {
+    onValue(api.databaseRef(), (data) => {
       if (data.val()) {
         setLoadedChannels(Object.values(data.val()) as ChannelDto[]);
         if (Object.values(data.val()).length && !selectedChannel?.id) {
@@ -70,6 +79,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
         setLoadedChannels([]);
         setSelectedChannel(null);
       }
+      setIsChannelLoading(false);
     });
   }, [refreshList]);
 
@@ -174,6 +184,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   return (
     <>
       <Menu.Menu style={{ paddingBottom: "2em" }}>
+        {isChannelLoading && <Loader active />}
         <Menu.Item onClick={openModal}>
           <span>
             <Icon name="exchange" /> Kanały{" "}
