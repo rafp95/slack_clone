@@ -28,6 +28,8 @@ export interface ChannelsProps {
 }
 
 export const Channels = ({ loggedUser }: ChannelsProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [channelDetails, setChannelDetails] = useState<ChannelDetails>(
     channelDetailsDefault
   );
@@ -83,6 +85,8 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       },
     };
 
+    setIsLoading(true);
+
     api
       .addChannels(key, newChannel)
       .then((data) => {
@@ -101,6 +105,9 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       })
       .catch((err) => {
         toast.success("Wystąpił błąd");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -212,7 +219,12 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
               />
             </Form.Field>
             <Modal.Actions>
-              <Button color="green" inverted onClick={handleSubmit}>
+              <Button
+                color="green"
+                inverted
+                disabled={isLoading}
+                onClick={handleSubmit}
+              >
                 <Icon name="checkmark" />
                 Dodaj
               </Button>

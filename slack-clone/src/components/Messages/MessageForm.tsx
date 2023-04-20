@@ -19,6 +19,7 @@ export const MessageForm = ({
   loggedUser,
 }: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setMessage(value);
@@ -44,6 +45,8 @@ export const MessageForm = ({
       return;
     }
 
+    setIsLoading(true);
+
     api
       .createMessage(uuid(), createMessage())
       .then(() => {
@@ -52,6 +55,9 @@ export const MessageForm = ({
       })
       .catch((err) => {
         toast.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -71,6 +77,7 @@ export const MessageForm = ({
           <Button
             onClick={sendMessage}
             color="orange"
+            disabled={isLoading}
             content="Dodaj odpowiedź"
             labelPosition="left"
             icon="edit"

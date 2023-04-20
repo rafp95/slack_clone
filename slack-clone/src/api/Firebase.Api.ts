@@ -34,4 +34,8 @@ export class FirebaseApi {
       ...message,
     });
   };
+
+  messagesRef() {
+    return ref(db, this._databaseKeyName).ref;
+  }
 }
