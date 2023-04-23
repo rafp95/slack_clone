@@ -29,8 +29,8 @@ export class FirebaseApi {
     });
   };
 
-  createMessage = (key: string, message: any) => {
-    return set(child(this.databaseRef(), key), {
+  createMessage = (key: number, message: any) => {
+    return set(child(this.databaseRef(), String(key)), {
       ...message,
     });
   };

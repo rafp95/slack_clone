@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Segment } from "semantic-ui-react";
+import { Button, Form, Input, Segment } from "semantic-ui-react";
 import { FirebaseApi } from "../../api/Firebase.Api";
 import { toast } from "react-toastify";
 import { ChannelDto } from "../../models/Channel";
@@ -48,7 +48,7 @@ export const MessageForm = ({
     setIsLoading(true);
 
     api
-      .createMessage(uuid(), createMessage())
+      .createMessage(moment().unix(), createMessage())
       .then(() => {
         setMessage("");
         toast.success("Dodano wiadomość");
@@ -64,31 +64,33 @@ export const MessageForm = ({
   return (
     <>
       <Segment className="message__form">
-        <Input
-          fluid
-          name="message"
-          onChange={handleChange}
-          placeholder="Napisz wiadomość"
-          style={{ marginBottom: ".7em" }}
-          label={<Button icon={"add"} />}
-          value={message}
-        />
-        <Button.Group icon widths="2">
-          <Button
-            onClick={sendMessage}
-            color="orange"
-            disabled={isLoading}
-            content="Dodaj odpowiedź"
-            labelPosition="left"
-            icon="edit"
+        <Form onSubmit={sendMessage}>
+          <Input
+            fluid
+            name="message"
+            onChange={handleChange}
+            placeholder="Napisz wiadomość"
+            style={{ marginBottom: ".7em" }}
+            label={<Button icon={"add"} />}
+            value={message}
           />
-          <Button
-            color="teal"
-            content="Dodaj media"
-            labelPosition="right"
-            icon="cloud upload"
-          />
-        </Button.Group>
+          <Button.Group icon widths="2">
+            <Button
+              onClick={sendMessage}
+              color="orange"
+              disabled={isLoading}
+              content="Dodaj odpowiedź"
+              labelPosition="left"
+              icon="edit"
+            />
+            <Button
+              color="teal"
+              content="Dodaj media"
+              labelPosition="right"
+              icon="cloud upload"
+            />
+          </Button.Group>
+        </Form>
       </Segment>
     </>
   );
