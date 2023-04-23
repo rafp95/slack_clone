@@ -20,6 +20,7 @@ export const MessageForm = ({
 }: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [messageIsValid, setMessageIsValid] = useState<boolean>(true);
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setMessage(value);
@@ -41,17 +42,17 @@ export const MessageForm = ({
 
   const sendMessage = () => {
     if (message.trim().length == 0) {
-      toast.error("Wprowadż wiadomość");
+      setMessageIsValid(false);
       return;
     }
 
+    setMessageIsValid(true);
     setIsLoading(true);
 
     api
       .createMessage(moment().unix(), createMessage())
       .then(() => {
         setMessage("");
-        toast.success("Dodano wiadomość");
       })
       .catch((err) => {
         toast.error(err);
@@ -68,6 +69,7 @@ export const MessageForm = ({
           <Input
             fluid
             name="message"
+            className={messageIsValid ? "" : "error input__error"}
             onChange={handleChange}
             placeholder="Napisz wiadomość"
             style={{ marginBottom: ".7em" }}
