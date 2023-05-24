@@ -14,15 +14,15 @@ interface MessagesProps {
 }
 
 export const Messages = ({ loggedUser }: MessagesProps) => {
-  const api = useApi("messages");
-  const [currentChannel, setCurrentChannel] = useState<ChannelDto>();
+  const api = useApi(`messages`);
   const [messages, setMessages] = useState<Array<any>>([]);
   const contentRef = useRef<null | HTMLDivElement>(null);
   const [isInitLoaded, setIsInitLoaded] = useState<boolean>(true);
+  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
 
   store.subscribe(() => {
     const { currentChannel = {} } = store.getState()?.channel;
-    setCurrentChannel(currentChannel as ChannelDto);
+    setSelectedChannel(currentChannel as ChannelDto);
   });
 
   const scrollToBottom = () => {
@@ -34,20 +34,23 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
   }, [messages]);
 
   useEffect(() => {
-    onValue(api.databaseRef(), (data) => {
-      setMessages((prevState) => {
-        if (prevState.length !== 0) {
-          setIsInitLoaded(false);
-        }
-        prevState = Object.values(data.val() ?? []);
-        return prevState;
+    if (selectedChannel) {
+      onValue(api.databaseRef(selectedChannel?.id), (data) => {
+        setMessages((prevState) => {
+          if (prevState.length !== 0) {
+            setIsInitLoaded(false);
+          }
+          prevState = Object.values(data.val() ?? []);
+          return prevState;
+        });
       });
-    });
-  }, []);
+    }
+  }, [selectedChannel]);
 
   const displayMessages = (messages: Array<object>) =>
     messages.map((_, idx) => (
       <Message
+        key={idx}
         message={_}
         user={loggedUser}
         isLastElem={!isInitLoaded ?? messages.length - 1 === idx ? true : false}
@@ -63,11 +66,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
           <div ref={contentRef} />
         </Comment.Group>
       </Segment>
-      <MessageForm
-        messagesRef={api}
-        currentChannel={currentChannel}
-        loggedUser={loggedUser}
-      />
+      <MessageForm loggedUser={loggedUser} />
     </React.Fragment>
   );
 };

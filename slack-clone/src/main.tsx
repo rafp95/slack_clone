@@ -31,6 +31,7 @@ const store = createStore(rootReducer, composeWithDevTools());
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoggedUser } from "./models/LoggedUser";
+import { ChannelDto } from "./models/Channel";
 
 const Root = () => {
   const navigateTo = useNavigate();

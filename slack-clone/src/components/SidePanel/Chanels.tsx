@@ -25,6 +25,8 @@ import { store } from "../../actions/reducer";
 import { initialUserState } from "../../reducers";
 import { useStore } from "react-redux";
 import { LoggedUser } from "../../models/LoggedUser";
+import { setChannel } from "../../actions";
+import channelsStyle from "./channels.module.scss";
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -60,20 +62,12 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   });
 
   useEffect(() => {
-    // api.getChannels().then((data) => {
-    //   console.log(data.val());
-    //   setLoadedChannels(Object.values(data.val()));
-    //
-    //   if (Object.values(data.val()).length && !selectedChannel?.id) {
-    //     setSelectedChannel(Object.values(data.val())[0] as ChanelDto);
-    //   }
-    // });
     onValue(api.databaseRef(), (data) => {
       if (data.val()) {
         setLoadedChannels(Object.values(data.val()) as ChannelDto[]);
         if (Object.values(data.val()).length && !selectedChannel?.id) {
           setSelectedChannel(Object.values(data.val())[0] as ChannelDto);
-          publishChannel(Object.values(data.val())[0] as ChannelDto);
+          setChannel(Object.values(data.val())[0] as ChannelDto);
         }
       } else {
         setLoadedChannels([]);
@@ -160,17 +154,9 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     }
   };
 
-  function publishChannel(channel: any) {
-    store.dispatch({
-      type: CURRENT_CHANNEL,
-      payload: {
-        currentChannel: channel,
-      },
-    } as ChannelActionWithPayload);
-  }
-
   const handleChannel = (channel: any) => {
-    publishChannel(channel);
+    setChannel(channel);
+    setSelectedChannel(channel as ChannelDto);
 
     let text = "";
     if (selectedChannel?.id) {
@@ -229,7 +215,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
                 onChange={handleChange}
               />
             </Form.Field>
-            <Modal.Actions>
+            <Modal.Actions className={channelsStyle.textRight}>
               <Button
                 color="green"
                 inverted

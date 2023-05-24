@@ -7,24 +7,26 @@ import { LoggedUser } from "../../models/LoggedUser";
 import moment from "moment";
 import { useApi } from "../../api/useApi";
 import uuid from "react-uuid";
+import { store } from "../../actions/reducer";
 interface MessageFormProps {
-  messagesRef: FirebaseApi;
-  currentChannel?: ChannelDto;
   loggedUser?: LoggedUser;
 }
 
-export const MessageForm = ({
-  messagesRef,
-  currentChannel,
-  loggedUser,
-}: MessageFormProps) => {
+export const MessageForm = ({ loggedUser }: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messageIsValid, setMessageIsValid] = useState<boolean>(true);
+  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
+
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setMessage(value);
   };
+
+  store.subscribe(() => {
+    const { currentChannel = {} } = store.getState()?.channel;
+    setSelectedChannel(currentChannel as ChannelDto);
+  });
 
   const api = useApi("messages");
 
@@ -50,7 +52,7 @@ export const MessageForm = ({
     setIsLoading(true);
 
     api
-      .createMessage(moment().unix(), createMessage())
+      .createMessage(selectedChannel!.id, createMessage())
       .then(() => {
         setMessage("");
       })

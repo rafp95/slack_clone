@@ -6,12 +6,14 @@ import { FirebaseUser } from "../../models/FirebaseUser";
 import { initialUserState } from "../../reducers";
 import { useStore } from "react-redux";
 import { LoggedUser } from "../../models/LoggedUser";
+import { ChannelDto } from "../../models/Channel";
 
 interface SidePanelProps {
   loggedUser?: LoggedUser;
+  channel?: ChannelDto;
 }
 
-export const SidePanel = ({ loggedUser }: SidePanelProps) => {
+export const SidePanel = ({ loggedUser, channel }: SidePanelProps) => {
   return (
     <Menu
       size="large"

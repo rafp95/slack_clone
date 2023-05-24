@@ -1,4 +1,12 @@
-import { child, get, getDatabase, ref, set, onValue } from "firebase/database";
+import {
+  child,
+  get,
+  getDatabase,
+  onValue,
+  ref,
+  push,
+  set,
+} from "firebase/database";
 import { UserCredential } from "firebase/auth";
 import { ChannelDto } from "../models/Channel";
 import { DatabaseCollectionName } from "./DatabaseCollectionName";
@@ -11,7 +19,11 @@ export class FirebaseApi {
     this._databaseKeyName = databaseKeyName;
   }
 
-  databaseRef() {
+  databaseRef(childKey?: string) {
+    if (childKey?.length) {
+      return ref(db, `${this._databaseKeyName}/${childKey}`).ref;
+    }
+
     return ref(db, this._databaseKeyName).ref;
   }
 
@@ -29,8 +41,11 @@ export class FirebaseApi {
     });
   };
 
-  createMessage = (key: number, message: any) => {
-    return set(child(this.databaseRef(), String(key)), {
+  createMessage = (key: string, message: any) => {
+    const newMessage = ref(db, `${this._databaseKeyName}/${key}`).ref;
+    const newMessageRef = push(newMessage);
+
+    return set(newMessageRef, {
       ...message,
     });
   };
