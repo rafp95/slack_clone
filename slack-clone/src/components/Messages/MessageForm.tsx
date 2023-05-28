@@ -8,6 +8,7 @@ import moment from "moment";
 import { useApi } from "../../api/useApi";
 import uuid from "react-uuid";
 import { store } from "../../actions/reducer";
+import { FileModal } from "./FileModal";
 interface MessageFormProps {
   loggedUser?: LoggedUser;
 }
@@ -17,6 +18,7 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messageIsValid, setMessageIsValid] = useState<boolean>(true);
   const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
+  const [modal, setModal] = useState<boolean>(false);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
@@ -64,6 +66,18 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
       });
   };
 
+  const openModal = (): void => {
+    setModal(true);
+  };
+
+  const closeModal = (): void => {
+    setModal(false);
+  };
+
+  const uploadFile = (file: File, metadata: object) => {
+    console.log(file);
+  };
+
   return (
     <>
       <Segment className="message__form">
@@ -90,8 +104,14 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
             <Button
               color="teal"
               content="Dodaj media"
+              onClick={openModal}
               labelPosition="right"
               icon="cloud upload"
+            />
+            <FileModal
+              modal={modal}
+              closeModal={closeModal}
+              uploadFile={uploadFile}
             />
           </Button.Group>
         </Form>

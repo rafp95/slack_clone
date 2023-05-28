@@ -63,11 +63,13 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
 
   useEffect(() => {
     onValue(api.databaseRef(), (data) => {
-      if (data.val()) {
-        setLoadedChannels(Object.values(data.val()) as ChannelDto[]);
-        if (Object.values(data.val()).length && !selectedChannel?.id) {
-          setSelectedChannel(Object.values(data.val())[0] as ChannelDto);
-          setChannel(Object.values(data.val())[0] as ChannelDto);
+      const resultData = Object.values(data.val());
+      setLoadedChannels(resultData as ChannelDto[]);
+
+      if (resultData?.length) {
+        if (!selectedChannel?.id) {
+          setSelectedChannel(resultData[0] as ChannelDto);
+          setChannel(resultData[0] as ChannelDto);
         }
       } else {
         setLoadedChannels([]);
