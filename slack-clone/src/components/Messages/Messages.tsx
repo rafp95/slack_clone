@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Comment, Loader, Segment } from "semantic-ui-react";
+import { Comment, Segment } from "semantic-ui-react";
 import { MessageForm } from "./MessageForm";
 import { MessagesHeader } from "./MessagesHeader";
 import { useApi } from "../../api/useApi";
@@ -53,7 +53,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
         key={idx}
         message={_}
         user={loggedUser}
-        isLastElem={!isInitLoaded ?? messages.length - 1 === idx ? true : false}
+        isLastElem={!isInitLoaded ?? messages.length - 1 === idx}
       />
     ));
 

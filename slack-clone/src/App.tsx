@@ -1,15 +1,10 @@
 import "./App.scss";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Grid } from "semantic-ui-react";
 import { ColorPanel } from "./components/ColorPanel/ColorPanel";
 import { SidePanel } from "./components/SidePanel/SidePanel";
 import { MetaPanel } from "./components/MetaPanel/MetaPanel";
 import { Messages } from "./components/Messages/Messages";
-import { store } from "./actions/reducer";
-import { ChannelDto } from "./models/Channel";
-import { FirebaseUser } from "./models/FirebaseUser";
-import { initialUserState } from "./reducers";
-import { useStore } from "react-redux";
 import { LoggedUser } from "./models/LoggedUser";
 
 interface AppProps {

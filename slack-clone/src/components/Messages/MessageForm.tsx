@@ -75,7 +75,7 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
   };
 
   const uploadFile = (file: File, metadata: object) => {
-    console.log(file);
+    api.sendPhoto(file);
   };
 
   return (

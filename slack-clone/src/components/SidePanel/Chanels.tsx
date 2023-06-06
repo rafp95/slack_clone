@@ -8,22 +8,13 @@ import {
   Menu,
   Modal,
 } from "semantic-ui-react";
-import {
-  ChannelDto,
-  Channel,
-  ChannelActionWithPayload,
-  ChannelDetails,
-} from "../../models/Channel";
+import { Channel, ChannelDetails, ChannelDto } from "../../models/Channel";
 import { getPropName } from "../../utilitis/propName";
 import { toast } from "react-toastify";
-import { FirebaseUser } from "../../models/FirebaseUser";
 import uuid from "react-uuid";
 import { useApi } from "../../api/useApi";
-import { CURRENT_CHANNEL } from "../../actions/types";
 import { onValue } from "firebase/database";
 import { store } from "../../actions/reducer";
-import { initialUserState } from "../../reducers";
-import { useStore } from "react-redux";
 import { LoggedUser } from "../../models/LoggedUser";
 import { setChannel } from "../../actions";
 import channelsStyle from "./channels.module.scss";
@@ -157,6 +148,11 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   };
 
   const handleChannel = (channel: any) => {
+    const { id = 0 } = channel;
+    if (selectedChannel && id && id === selectedChannel?.id) {
+      return;
+    }
+
     setChannel(channel);
     setSelectedChannel(channel as ChannelDto);
 
