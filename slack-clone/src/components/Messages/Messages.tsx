@@ -4,27 +4,20 @@ import { MessageForm } from "./MessageForm";
 import { MessagesHeader } from "./MessagesHeader";
 import { useApi } from "../../api/useApi";
 import { ChannelDto } from "../../models/Channel";
-import { store } from "../../actions/reducer";
 import { LoggedUser } from "../../models/LoggedUser";
 import { onValue } from "firebase/database";
 import { Message } from "./Message";
 
 interface MessagesProps {
   loggedUser?: LoggedUser;
+  selectedChannel?: ChannelDto | null;
 }
 
-export const Messages = ({ loggedUser }: MessagesProps) => {
+export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
   const api = useApi(`messages`);
   const [messages, setMessages] = useState<Array<any>>([]);
   const contentRef = useRef<null | HTMLDivElement>(null);
   const [isInitLoaded, setIsInitLoaded] = useState<boolean>(true);
-  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
-
-  store.subscribe(() => {
-    const { currentChannel = {} } = store.getState()?.channel;
-    setSelectedChannel(currentChannel as ChannelDto);
-  });
-
   const scrollToBottom = () => {
     contentRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -66,7 +59,7 @@ export const Messages = ({ loggedUser }: MessagesProps) => {
           <div ref={contentRef} />
         </Comment.Group>
       </Segment>
-      <MessageForm loggedUser={loggedUser} />
+      <MessageForm loggedUser={loggedUser} selectedChannel={selectedChannel} />
     </React.Fragment>
   );
 };

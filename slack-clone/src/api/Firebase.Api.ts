@@ -1,18 +1,18 @@
-import { child, getDatabase, ref, push, set } from "firebase/database";
+import { child, getDatabase, push, ref, set } from "firebase/database";
 import { UserCredential } from "firebase/auth";
 import { DatabaseCollectionName } from "./DatabaseCollectionName";
 import {
+  getDownloadURL,
   getStorage,
   ref as refStorage,
-  uploadBytes,
   uploadBytesResumable,
-  getDownloadURL,
 } from "firebase/storage";
 
 const db = getDatabase();
 
 export class FirebaseApi {
   private readonly _databaseKeyName: DatabaseCollectionName;
+
   constructor(databaseKeyName: DatabaseCollectionName) {
     this._databaseKeyName = databaseKeyName;
   }
@@ -48,7 +48,12 @@ export class FirebaseApi {
     });
   };
 
-  sendPhoto = (file: File) => {
+  sendPhoto = (
+    file: File,
+    addPhotoMessage: (photoUrl: string) => void,
+    setProgres?: React.Dispatch<React.SetStateAction<number>>,
+    setUploadState?: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const storage = getStorage();
     const storageRef = refStorage(storage, `images/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -61,6 +66,7 @@ export class FirebaseApi {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
+        setProgres!(progress);
         switch (snapshot.state) {
           case "paused":
             console.log("Upload is paused");
@@ -78,6 +84,8 @@ export class FirebaseApi {
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log("File available at", downloadURL);
+          addPhotoMessage(downloadURL);
+          setUploadState!(false);
         });
       }
     );

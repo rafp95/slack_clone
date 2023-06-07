@@ -45,6 +45,10 @@ html {
       align-items: center !important;
     }
 
+    .message__image {
+      padding: 1em;
+    }
+
   }
 }
 
@@ -95,6 +99,8 @@ html {
 
 .input__error {
   border: 1px solid red !important;
+  animation: shake .1s ease .1s 2;
+  box-shadow: 0 0 0.5em red;
 }
 
 @mixin default__margin--x($margin:1rem) {
@@ -104,4 +110,19 @@ html {
 
 .file__img--preview {
   @include default__margin--x(1rem);
+}
+
+@keyframes shake {
+  0% {
+    margin-left: 0rem;
+  }
+  25% {
+    margin-left: 0.5rem;
+  }
+  75% {
+    margin-left: -0.5rem;
+  }
+  100% {
+    margin-left: 0rem;
+  }
 }

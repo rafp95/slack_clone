@@ -8,7 +8,7 @@ interface FileModalProps {
 
   modal: boolean;
 
-  uploadFile(file: File, metadata: object): void;
+  uploadFile(file: File): void;
 }
 
 const validImgType: string[] = ["image/jpeg", "image/png"];
@@ -53,7 +53,7 @@ export const FileModal = ({
     }
     if (fileHasValidFormat(file)) {
       const metadata = { contentType: file!.type };
-      uploadFile(file as File, metadata);
+      uploadFile(file as File);
       closeModal();
       clearFile();
     } else {
@@ -70,7 +70,14 @@ export const FileModal = ({
   };
 
   return (
-    <Modal basic open={modal} onClose={closeModal}>
+    <Modal
+      basic
+      open={modal}
+      onClose={() => {
+        closeModal();
+        clearFile();
+      }}
+    >
       <Modal.Header>Wybierz plik</Modal.Header>
       <Modal.Content>
         <Image
@@ -93,7 +100,14 @@ export const FileModal = ({
           <Icon name="checkmark" />
           Wyślij
         </Button>
-        <Button color="red" inverted onClick={closeModal}>
+        <Button
+          color="red"
+          inverted
+          onClick={() => {
+            closeModal();
+            clearFile();
+          }}
+        >
           <Icon name="checkmark" />
           Zamknij
         </Button>

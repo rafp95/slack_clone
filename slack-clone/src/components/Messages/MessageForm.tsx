@@ -1,48 +1,81 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Form, Input, Segment } from "semantic-ui-react";
-import { FirebaseApi } from "../../api/Firebase.Api";
 import { toast } from "react-toastify";
 import { ChannelDto } from "../../models/Channel";
 import { LoggedUser } from "../../models/LoggedUser";
 import moment from "moment";
 import { useApi } from "../../api/useApi";
-import uuid from "react-uuid";
-import { store } from "../../actions/reducer";
 import { FileModal } from "./FileModal";
+import {
+  getStorage,
+  SessionStorageOperations,
+} from "../../utils/session.storage";
+import { ProgressBar } from "../ProgressBar/ProgressBar";
+
 interface MessageFormProps {
   loggedUser?: LoggedUser;
+  selectedChannel?: ChannelDto | null;
 }
 
-export const MessageForm = ({ loggedUser }: MessageFormProps) => {
+export const MessageForm = ({
+  loggedUser,
+  selectedChannel,
+}: MessageFormProps) => {
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messageIsValid, setMessageIsValid] = useState<boolean>(true);
-  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
   const [modal, setModal] = useState<boolean>(false);
+  const [progress, setProgres] = useState<number>(0);
+  const [uploadState, setUploadState] = useState<boolean>(false);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
     setMessage(value);
   };
 
-  store.subscribe(() => {
-    const { currentChannel = {} } = store.getState()?.channel;
-    setSelectedChannel(currentChannel as ChannelDto);
-  });
-
   const api = useApi("messages");
 
-  const createMessage = () => {
-    return {
-      timestamp: moment().unix(),
-      user: {
-        id: loggedUser?.uid,
-        name: loggedUser?.displayName,
-        avatar: loggedUser?.photoURL,
-      },
-      content: message,
-    };
+  const createMessage = (photoUrl?: string) => {
+    return !!photoUrl
+      ? {
+          timestamp: moment().unix(),
+          user: {
+            id: loggedUser?.uid,
+            name: loggedUser?.displayName,
+            avatar: loggedUser?.photoURL,
+          },
+          photo: photoUrl,
+        }
+      : {
+          timestamp: moment().unix(),
+          user: {
+            id: loggedUser?.uid,
+            name: loggedUser?.displayName,
+            avatar: loggedUser?.photoURL,
+          },
+          content: message,
+        };
   };
+
+  function addMessage(message: object) {
+    if (!!!selectedChannel) {
+      selectedChannel = getStorage<ChannelDto | null>(
+        SessionStorageOperations.CURRENT_CHANNEL
+      );
+    }
+
+    api
+      .createMessage(selectedChannel!.id, message)
+      .then(() => {
+        setMessage("");
+      })
+      .catch((err) => {
+        toast.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
 
   const sendMessage = () => {
     if (message.trim().length == 0) {
@@ -53,17 +86,7 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
     setMessageIsValid(true);
     setIsLoading(true);
 
-    api
-      .createMessage(selectedChannel!.id, createMessage())
-      .then(() => {
-        setMessage("");
-      })
-      .catch((err) => {
-        toast.error(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    addMessage(createMessage());
   };
 
   const openModal = (): void => {
@@ -74,8 +97,13 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
     setModal(false);
   };
 
-  const uploadFile = (file: File, metadata: object) => {
-    api.sendPhoto(file);
+  const addPhotoMessage = useCallback((photoUrl: string) => {
+    addMessage(createMessage(photoUrl));
+  }, []);
+
+  const uploadFile = (file: File) => {
+    setUploadState(true);
+    api.sendPhoto(file, addPhotoMessage, setProgres, setUploadState);
   };
 
   return (
@@ -108,13 +136,14 @@ export const MessageForm = ({ loggedUser }: MessageFormProps) => {
               labelPosition="right"
               icon="cloud upload"
             />
-            <FileModal
-              modal={modal}
-              closeModal={closeModal}
-              uploadFile={uploadFile}
-            />
           </Button.Group>
         </Form>
+        <FileModal
+          modal={modal}
+          closeModal={closeModal}
+          uploadFile={uploadFile}
+        />
+        <ProgressBar precentUploaded={progress} uploadState={uploadState} />
       </Segment>
     </>
   );
