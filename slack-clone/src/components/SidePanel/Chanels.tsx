@@ -17,6 +17,11 @@ import { onValue } from "firebase/database";
 import { LoggedUser } from "../../models/LoggedUser";
 import { setChannel } from "../../actions";
 import channelsStyle from "./channels.module.scss";
+import {
+  addEvent,
+  CustomEvents,
+  removeEvent,
+} from "../../utilitis/customEvents";
 
 const channelDetailsDefault = {
   channelDetails: "",
@@ -45,6 +50,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
   const api = useApi("channels");
+  const [channelNewMessage, setChannelNewMessage] = useState<string>("");
 
   useEffect(() => {
     onValue(api.databaseRef(), (data) => {
@@ -63,6 +69,19 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
       setIsChannelLoading(false);
     });
   }, [refreshList]);
+
+  const newMessage = (value: any) => {
+    const { detail = "" } = value;
+    setChannelNewMessage(detail);
+  };
+
+  useEffect(() => {
+    addEvent(CustomEvents.new_message, newMessage);
+
+    return () => {
+      removeEvent(CustomEvents.new_message, newMessage);
+    };
+  }, []);
 
   const addChannel = () => {
     const key = uuid();
@@ -180,7 +199,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
                 style={{ opacity: 0.7 }}
                 onClick={() => handleChannel(channel)}
               >
-                # {channel.name}
+                # {channel.name} {channel.id === channelNewMessage ? "*" : ""}
               </Menu.Item>
             );
           })}

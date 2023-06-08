@@ -119,6 +119,13 @@ export const MessageForm = ({
             style={{ marginBottom: ".7em" }}
             label={<Button icon={"add"} />}
             value={message}
+            onClick={() => {
+              window.dispatchEvent(
+                new CustomEvent("new_message", {
+                  detail: "",
+                })
+              );
+            }}
           />
           <Button.Group icon widths="2">
             <Button

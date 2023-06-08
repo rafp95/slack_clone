@@ -7,6 +7,7 @@ import { ChannelDto } from "../../models/Channel";
 import { LoggedUser } from "../../models/LoggedUser";
 import { onValue } from "firebase/database";
 import { Message } from "./Message";
+import { CustomEvents, dispatchEvent } from "../../utilitis/customEvents";
 
 interface MessagesProps {
   loggedUser?: LoggedUser;
@@ -29,6 +30,7 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
         setMessages((prevState) => {
           if (prevState.length !== 0) {
             setIsInitLoaded(false);
+            dispatchEvent(CustomEvents.new_message, selectedChannel!.id);
           }
           prevState = Object.values(data.val() ?? []);
           return prevState;
