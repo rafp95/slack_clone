@@ -1,19 +1,14 @@
 import { Menu } from "semantic-ui-react";
 import { UserPanel } from "../UserPanel/UserPanel";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Channels } from "./Chanels";
-import { FirebaseUser } from "../../models/FirebaseUser";
-import { initialUserState } from "../../reducers";
-import { useStore } from "react-redux";
 import { LoggedUser } from "../../models/LoggedUser";
-import { ChannelDto } from "../../models/Channel";
 
 interface SidePanelProps {
   loggedUser?: LoggedUser;
-  channel?: ChannelDto;
 }
 
-export const SidePanel = ({ loggedUser, channel }: SidePanelProps) => {
+export const SidePanel = ({ loggedUser }: SidePanelProps) => {
   return (
     <Menu
       size="large"

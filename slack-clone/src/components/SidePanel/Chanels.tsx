@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 import uuid from "react-uuid";
 import { useApi } from "../../api/useApi";
 import { onValue } from "firebase/database";
-import { store } from "../../actions/reducer";
 import { LoggedUser } from "../../models/LoggedUser";
 import { setChannel } from "../../actions";
 import channelsStyle from "./channels.module.scss";
@@ -46,11 +45,6 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   });
   const [refreshList, setRefreshList] = useState<boolean>(false);
   const api = useApi("channels");
-
-  store.subscribe(() => {
-    const { currentChannel = {} } = store.getState()?.channel;
-    setSelectedChannel(currentChannel as ChannelDto);
-  });
 
   useEffect(() => {
     onValue(api.databaseRef(), (data) => {
