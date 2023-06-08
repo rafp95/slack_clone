@@ -18,13 +18,10 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
   const [messages, setMessages] = useState<Array<any>>([]);
   const contentRef = useRef<null | HTMLDivElement>(null);
   const [isInitLoaded, setIsInitLoaded] = useState<boolean>(true);
+  const [imgLoaded, setImgLoaded] = useState<string>("");
   const scrollToBottom = () => {
     contentRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   useEffect(() => {
     if (selectedChannel) {
@@ -40,6 +37,10 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
     }
   }, [selectedChannel]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, imgLoaded]);
+
   const displayMessages = (messages: Array<object>) =>
     messages.map((_, idx) => (
       <Message
@@ -47,6 +48,7 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
         message={_}
         user={loggedUser}
         isLastElem={!isInitLoaded ?? messages.length - 1 === idx}
+        setImgLoaded={setImgLoaded}
       />
     ));
 
@@ -56,7 +58,7 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
       <Segment>
         <Comment.Group className="messages">
           {displayMessages(messages)}
-          <div ref={contentRef} />
+          {!!messages.length && <div ref={contentRef} />}
         </Comment.Group>
       </Segment>
       <MessageForm loggedUser={loggedUser} selectedChannel={selectedChannel} />

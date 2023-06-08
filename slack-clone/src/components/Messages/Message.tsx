@@ -7,9 +7,15 @@ interface MessageProps {
   message: any;
   user?: LoggedUser;
   isLastElem?: boolean;
+  setImgLoaded?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const Message = ({ message, user, isLastElem }: MessageProps) => {
+export const Message = ({
+  message,
+  user,
+  isLastElem,
+  setImgLoaded,
+}: MessageProps) => {
   const isOwnMessage = (message: any) =>
     user?.uid == message.user.id ? "message__self" : "";
   const timeFromNow = (timestamp: number) => moment(timestamp * 1000).fromNow();
@@ -24,7 +30,13 @@ export const Message = ({ message, user, isLastElem }: MessageProps) => {
           <Comment.Author>{message.user.name}</Comment.Author>
           <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
           {isPhoto(message) ? (
-            <Image src={message.photo} className="message__image" />
+            <Image
+              src={message.photo}
+              className="message__image"
+              onLoad={() => {
+                setImgLoaded!(message.photo);
+              }}
+            />
           ) : (
             <Comment.Text>{message.content}</Comment.Text>
           )}

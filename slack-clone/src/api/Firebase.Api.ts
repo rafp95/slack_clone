@@ -66,7 +66,7 @@ export class FirebaseApi {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
-        setProgres!(progress);
+        setProgres!(Number(progress.toFixed()));
         switch (snapshot.state) {
           case "paused":
             console.log("Upload is paused");
