@@ -18,8 +18,9 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
   const api = useApi(`messages`);
   const [messages, setMessages] = useState<Array<any>>([]);
   const contentRef = useRef<null | HTMLDivElement>(null);
-  const [isInitLoaded, setIsInitLoaded] = useState<boolean>(true);
   const [imgLoaded, setImgLoaded] = useState<string>("");
+  const firstRender = useRef<boolean>(true);
+
   const scrollToBottom = () => {
     contentRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -29,14 +30,23 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
       onValue(api.databaseRef(selectedChannel?.id), (data) => {
         setMessages((prevState) => {
           if (prevState.length !== 0) {
-            setIsInitLoaded(false);
-            dispatchEvent(CustomEvents.new_message, selectedChannel!.id);
+            if (!firstRender.current) {
+              dispatchEvent(CustomEvents.new_message, selectedChannel!.id);
+            } else {
+              firstRender.current = false;
+            }
           }
           prevState = Object.values(data.val() ?? []);
           return prevState;
         });
       });
     }
+
+    return () => {
+      dispatchEvent(CustomEvents.new_message, "");
+      firstRender.current = true;
+      setMessages([]);
+    };
   }, [selectedChannel]);
 
   useEffect(() => {
@@ -49,14 +59,14 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
         key={idx}
         message={_}
         user={loggedUser}
-        isLastElem={!isInitLoaded ?? messages.length - 1 === idx}
+        isLastElem={!firstRender.current ? messages.length - 1 === idx : false}
         setImgLoaded={setImgLoaded}
       />
     ));
 
   return (
     <React.Fragment>
-      <MessagesHeader />
+      <MessagesHeader selectedChannel={selectedChannel} />
       <Segment>
         <Comment.Group className="messages">
           {displayMessages(messages)}

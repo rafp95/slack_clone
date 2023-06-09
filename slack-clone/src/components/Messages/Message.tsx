@@ -16,11 +16,12 @@ export const Message = ({
   isLastElem,
   setImgLoaded,
 }: MessageProps) => {
-  const isOwnMessage = (message: any) =>
+  const isOwnMessage = (message: any): string =>
     user?.uid == message.user.id ? "message__self" : "";
-  const timeFromNow = (timestamp: number) => moment(timestamp * 1000).fromNow();
+  const timeFromNow = (timestamp: number): string =>
+    moment(timestamp * 1000).fromNow();
 
-  const isPhoto = (message: object) => message.hasOwnProperty("photo");
+  const isPhoto = (message: object): boolean => message.hasOwnProperty("photo");
 
   return (
     <Fragment key={message.timestamp}>
