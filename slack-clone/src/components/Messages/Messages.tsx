@@ -29,19 +29,16 @@ export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {
     if (selectedChannel) {
       onValue(api.databaseRef(selectedChannel?.id), (data) => {
         setMessages((prevState) => {
-          if (prevState.length !== 0) {
-            if (!firstRender.current) {
-              dispatchEvent(CustomEvents.new_message, selectedChannel!.id);
-            } else {
-              firstRender.current = false;
-            }
-          }
           prevState = Object.values(data.val() ?? []);
+          if (!firstRender.current) {
+            dispatchEvent(CustomEvents.new_message, selectedChannel!.id);
+          } else if (firstRender.current) {
+            firstRender.current = false;
+          }
           return prevState;
         });
       });
     }
-
     return () => {
       dispatchEvent(CustomEvents.new_message, "");
       firstRender.current = true;

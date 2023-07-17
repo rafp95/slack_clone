@@ -24,16 +24,18 @@ import rootReducer from "./reducers";
 import { setUser } from "./actions";
 import { Spinner } from "./components/Spinner/Spinner";
 import { FirebaseActionWithPayload, FirebaseUser } from "./models/FirebaseUser";
-import { CLEAR_UER, CURRENT_CHANNEL, SET_USER } from "./actions/types";
+import { CLEAR_UER } from "./actions/types";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { LoggedUser } from "./models/LoggedUser";
+import moment from "moment";
+import "moment/dist/locale/pl";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { LoggedUser } from "./models/LoggedUser";
-import { ChannelDto } from "./models/Channel";
-
 const Root = () => {
+  moment.locale("pl");
+
   const navigateTo = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loggedUser, setLoggedUser] = useState<LoggedUser>();

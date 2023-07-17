@@ -11,6 +11,7 @@ import {
   SessionStorageOperations,
 } from "../../utils/session.storage";
 import { ProgressBar } from "../ProgressBar/ProgressBar";
+import { CustomEvents, dispatchEvent } from "../../utilitis/customEvents";
 
 interface MessageFormProps {
   loggedUser?: LoggedUser;
@@ -120,31 +121,27 @@ export const MessageForm = ({
             label={<Button icon={"add"} />}
             value={message}
             onClick={() => {
-              window.dispatchEvent(
-                new CustomEvent("new_message", {
-                  detail: "",
-                })
-              );
+              dispatchEvent(CustomEvents.new_message, "");
             }}
           />
-          <Button.Group icon widths="2">
-            <Button
-              onClick={sendMessage}
-              color="orange"
-              disabled={isLoading}
-              content="Dodaj odpowiedź"
-              labelPosition="left"
-              icon="edit"
-            />
-            <Button
-              color="teal"
-              content="Dodaj media"
-              onClick={openModal}
-              labelPosition="right"
-              icon="cloud upload"
-            />
-          </Button.Group>
         </Form>
+        <Button.Group icon widths="2">
+          <Button
+            onClick={sendMessage}
+            color="orange"
+            disabled={isLoading}
+            content="Dodaj odpowiedź"
+            labelPosition="left"
+            icon="edit"
+          />
+          <Button
+            color="teal"
+            content="Dodaj media"
+            onClick={openModal}
+            labelPosition="right"
+            icon="cloud upload"
+          />
+        </Button.Group>
         <FileModal
           modal={modal}
           closeModal={closeModal}
