@@ -7,6 +7,7 @@ import {
   ref as refStorage,
   uploadBytesResumable,
 } from "firebase/storage";
+import { ChannelCreated } from "../models/Channel";
 
 const db = getDatabase();
 
@@ -25,7 +26,7 @@ export class FirebaseApi {
     return ref(db, this._databaseKeyName).ref;
   }
 
-  addChannels = (key: string, newChannel: any) => {
+  addChannels = (key: string, newChannel: ChannelCreated) => {
     return set(child(this.databaseRef(), key), {
       ...newChannel,
     });

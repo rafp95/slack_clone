@@ -3,7 +3,7 @@ import { Comment, Segment } from "semantic-ui-react";
 import { MessageForm } from "./MessageForm";
 import { MessagesHeader } from "./MessagesHeader";
 import { useApi } from "../../api/useApi";
-import { ChannelDto } from "../../models/Channel";
+import { ChannelCreated } from "../../models/Channel";
 import { LoggedUser } from "../../models/LoggedUser";
 import { onValue } from "firebase/database";
 import { Message } from "./Message";
@@ -11,7 +11,7 @@ import { CustomEvents, dispatchEvent } from "../../utilitis/customEvents";
 
 interface MessagesProps {
   loggedUser?: LoggedUser;
-  selectedChannel?: ChannelDto | null;
+  selectedChannel?: ChannelCreated | null;
 }
 
 export const Messages = ({ loggedUser, selectedChannel }: MessagesProps) => {

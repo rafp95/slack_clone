@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Button, Form, Input, Segment } from "semantic-ui-react";
 import { toast } from "react-toastify";
-import { ChannelDto } from "../../models/Channel";
+import { ChannelCreated } from "../../models/Channel";
 import { LoggedUser } from "../../models/LoggedUser";
 import moment from "moment";
 import { useApi } from "../../api/useApi";
@@ -15,7 +15,7 @@ import { CustomEvents, dispatchEvent } from "../../utilitis/customEvents";
 
 interface MessageFormProps {
   loggedUser?: LoggedUser;
-  selectedChannel?: ChannelDto | null;
+  selectedChannel?: ChannelCreated | null;
 }
 
 export const MessageForm = ({
@@ -60,7 +60,7 @@ export const MessageForm = ({
 
   function addMessage(message: object) {
     if (!!!selectedChannel) {
-      selectedChannel = getStorage<ChannelDto | null>(
+      selectedChannel = getStorage<ChannelCreated | null>(
         SessionStorageOperations.CURRENT_CHANNEL
       );
     }

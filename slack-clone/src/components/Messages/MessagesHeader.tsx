@@ -1,9 +1,9 @@
 import { Header, Icon, Input, Segment } from "semantic-ui-react";
 import React from "react";
-import { ChannelDto } from "../../models/Channel";
+import { ChannelCreated } from "../../models/Channel";
 
 interface MessagesHeaderProps {
-  selectedChannel?: ChannelDto | null;
+  selectedChannel?: ChannelCreated | null;
 }
 
 export const MessagesHeader = ({ selectedChannel }: MessagesHeaderProps) => {

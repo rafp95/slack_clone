@@ -6,7 +6,7 @@ import { SidePanel } from "./components/SidePanel/SidePanel";
 import { MetaPanel } from "./components/MetaPanel/MetaPanel";
 import { Messages } from "./components/Messages/Messages";
 import { LoggedUser } from "./models/LoggedUser";
-import { ChannelDto } from "./models/Channel";
+import { ChannelCreated } from "./models/Channel";
 import { store } from "./actions/reducer";
 import { SessionStorageOperations, setStorage } from "./utils/session.storage";
 
@@ -15,15 +15,15 @@ interface AppProps {
 }
 
 const App = ({ loggedUser }: AppProps) => {
-  const [selectedChannel, setSelectedChannel] = useState<ChannelDto>();
+  const [selectedChannel, setSelectedChannel] = useState<ChannelCreated>();
 
   store.subscribe(() => {
     const { currentChannel = null } = store.getState()?.channel;
     if (currentChannel) {
-      setSelectedChannel(currentChannel as ChannelDto);
+      setSelectedChannel(currentChannel as ChannelCreated);
       setStorage(
         SessionStorageOperations.CURRENT_CHANNEL,
-        currentChannel as ChannelDto
+        currentChannel as ChannelCreated
       );
     }
   });

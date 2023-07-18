@@ -1,5 +1,3 @@
-import { CURRENT_CHANNEL } from "../actions/types";
-
 export interface ChannelDetails {
   channelName: string;
   channelDetails: string;
@@ -12,7 +10,7 @@ export interface Channel {
   chanelDetails: string;
 }
 
-export interface ChannelDto {
+export interface ChannelCreated {
   createdBy: {
     avatar: string;
     name: string;

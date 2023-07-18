@@ -8,7 +8,7 @@ import {
   Menu,
   Modal,
 } from "semantic-ui-react";
-import { Channel, ChannelDetails, ChannelDto } from "../../models/Channel";
+import { Channel, ChannelCreated, ChannelDetails } from "../../models/Channel";
 import { getPropName } from "../../utilitis/propName";
 import { toast } from "react-toastify";
 import uuid from "react-uuid";
@@ -39,8 +39,9 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   const [channelDetails, setChannelDetails] = useState<ChannelDetails>(
     channelDetailsDefault
   );
-  const [loadedChannels, setLoadedChannels] = useState<ChannelDto[]>([]);
-  const [selectedChannel, setSelectedChannel] = useState<ChannelDto | null>();
+  const [loadedChannels, setLoadedChannels] = useState<ChannelCreated[]>([]);
+  const [selectedChannel, setSelectedChannel] =
+    useState<ChannelCreated | null>();
 
   const [channels, setChannels] = useState<Channel>({
     channels: [],
@@ -55,12 +56,12 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
   useEffect(() => {
     onValue(api.databaseRef(), (data) => {
       const resultData = Object.values(data.val());
-      setLoadedChannels(resultData as ChannelDto[]);
+      setLoadedChannels(resultData as ChannelCreated[]);
 
       if (resultData?.length) {
         if (!selectedChannel?.id) {
-          setSelectedChannel(resultData[0] as ChannelDto);
-          setChannel(resultData[0] as ChannelDto);
+          setSelectedChannel(resultData[0] as ChannelCreated);
+          setChannel(resultData[0] as ChannelCreated);
         }
       } else {
         setLoadedChannels([]);
@@ -93,7 +94,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
         name: loggedUser?.displayName,
         avatar: loggedUser?.photoURL,
       },
-    };
+    } as ChannelCreated;
 
     setIsLoading(true);
 
@@ -135,7 +136,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     });
   };
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setChannelDetails((prevState) => {
       prevState = { ...prevState, [event.target.name]: event.target.value };
@@ -167,7 +168,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
     }
 
     setChannel(channel);
-    setSelectedChannel(channel as ChannelDto);
+    setSelectedChannel(channel as ChannelCreated);
 
     let text = "";
     if (selectedChannel?.id) {
@@ -190,7 +191,7 @@ export const Channels = ({ loggedUser }: ChannelsProps) => {
         </Menu.Item>
         {/*Channels*/}
         {loadedChannels.length > 0 &&
-          loadedChannels.map((channel: ChannelDto) => {
+          loadedChannels.map((channel: ChannelCreated) => {
             return (
               <Menu.Item
                 className={selectedChannel?.id === channel.id ? "active" : ""}
